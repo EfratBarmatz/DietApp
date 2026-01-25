@@ -3,162 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pastel Calm Diet</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌸</text></svg>">
+    <title>Dreamy Diet</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍎</text></svg>">
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;700;800&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg-dark: #1a1b26; /* רקע כהה רך יותר */
-            /* פלטת פסטל ניאון חדשה */
-            --pastel-mint: #81eba9;
-            --pastel-lavender: #a79bf2;
-            --pastel-peach: #f2a69b;
-            --pastel-sky: #89ddf0;
+            --bg-dark: #0f172a;
+            --glass-bg: rgba(30, 41, 59, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            /* פלטת צבעים חדשה: פסטל זוהר על כהה */
+            --color-1: #f472b6; /* ורוד */
+            --color-2: #c084fc; /* סגול לילך */
+            --color-3: #fbbf24; /* זהב רך */
         }
 
         body {
-            font-family: 'Assistant', system-ui, sans-serif;
+            font-family: 'Assistant', sans-serif;
             background-color: var(--bg-dark);
-            color: #e2e8f0;
+            color: #f8fafc;
             margin: 0; min-height: 100vh;
             display: flex; flex-direction: column;
             overflow-x: hidden;
         }
 
-        /* טקסט כותרת פסטל */
-        .pastel-text {
-            font-weight: 800;
-            background: linear-gradient(to right, var(--pastel-mint), var(--pastel-sky));
+        /* טקסט זוהר וצבעוני (הדבר שאהבת!) */
+        .glow-text {
+            font-weight: 900;
+            background: linear-gradient(to right, var(--color-1), var(--color-2), var(--color-3));
             -webkit-background-clip: text; background-clip: text; color: transparent;
-            text-shadow: 0 0 30px rgba(129, 235, 169, 0.3);
+            text-shadow: 0 0 30px rgba(244, 114, 182, 0.4);
             margin-bottom: 10px;
         }
 
-        /* --- משותף --- */
-        .auth-container { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 30px; max-width: 400px; margin: 0 auto; width: 100%; }
-        .input-dark {
-            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.1); color: white;
-            border-radius: 20px; padding: 15px; font-size: 1.1rem; width: 100%; margin-bottom: 15px; backdrop-filter: blur(10px); transition: 0.3s;
+        /* --- כניסה והרשמה --- */
+        .auth-container {
+            flex: 1; display: flex; flex-direction: column; justify-content: center;
+            padding: 30px; max-width: 400px; margin: 0 auto; width: 100%;
         }
-        .input-dark:focus { outline: none; border-color: var(--pastel-mint); box-shadow: 0 0 20px rgba(129, 235, 169, 0.2); }
-
-        .btn-pastel {
-            background: linear-gradient(135deg, var(--pastel-mint), #5cdb8e);
-            color: #1a1b26; font-weight: 800; padding: 15px; border-radius: 20px; border: none; width: 100%; font-size: 1.2rem;
-            box-shadow: 0 5px 20px rgba(129, 235, 169, 0.3); margin-top: 10px; cursor: pointer; transition: 0.2s;
-        }
-        .btn-pastel:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(129, 235, 169, 0.5); }
-
-        .app-header {
-            padding: 20px 25px; display: flex; justify-content: space-between; align-items: center;
-            background: transparent; position: sticky; top: 0; z-index: 10;
-        }
-        .btn-logout { background: rgba(255,255,255,0.1); border: none; color: white; border-radius: 50px; padding: 8px 20px; font-size: 0.9rem; }
-
-        /* מד קלוריות פסטל */
-        .progress-container { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px 0 50px; position: relative; }
-        .glow-bg { position: absolute; width: 240px; height: 240px; border-radius: 50%; background: radial-gradient(circle, rgba(129, 235, 169, 0.15) 0%, rgba(26,27,38,0) 70%); animation: pulse 5s infinite ease-in-out; z-index: 0; }
-        @keyframes pulse { 0% { transform: scale(1); opacity: 0.6; } 50% { transform: scale(1.1); opacity: 0.9; } 100% { transform: scale(1); opacity: 0.6; } }
-        .cal-number { font-size: 5rem; font-weight: 900; line-height: 1; z-index: 1; background: linear-gradient(to bottom, #ffffff, #cce0ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
-        .cal-label { color: var(--pastel-mint); font-weight: 700; letter-spacing: 2px; margin-top: 10px; z-index: 1; text-transform: uppercase; font-size: 0.9rem; opacity: 0.8; }
-
-        /* --- עיצוב הבלוקים החדש (במקום רשימה) --- */
-        .meals-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
-            padding: 0 25px 100px; /* מרווח למטה לכפתור הצף */
-        }
-
-        .meal-block {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 24px; padding: 20px;
-            display: flex; flex-direction: column;
-            transition: 0.3s; position: relative; overflow: hidden;
-        }
-        .meal-block:hover { background: rgba(255, 255, 255, 0.06); transform: translateY(-5px); }
         
-        /* צבעים שונים לכל שעה */
-        .block-morning { border-bottom: 4px solid var(--pastel-mint); }
-        .block-noon { border-bottom: 4px solid var(--pastel-sky); }
-        .block-evening { border-bottom: 4px solid var(--pastel-lavender); }
-        .block-snack { border-bottom: 4px solid var(--pastel-peach); }
+        .input-glass {
+            background: var(--glass-bg); border: 1px solid var(--glass-border); color: white;
+            border-radius: 15px; padding: 15px; font-size: 1.1rem; width: 100%;
+            margin-bottom: 15px; backdrop-filter: blur(10px); transition: 0.3s;
+        }
+        .input-glass:focus { outline: none; border-color: var(--color-1); box-shadow: 0 0 15px rgba(244, 114, 182, 0.3); }
 
-        .block-icon { font-size: 1.8rem; margin-bottom: 10px; opacity: 0.8; }
-        .block-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 5px; }
-        .block-cal { font-size: 1.6rem; font-weight: 900; color: white; }
-        .block-count { font-size: 0.9rem; opacity: 0.6; }
-        .empty-block { opacity: 0.4; }
+        .btn-glow {
+            background: linear-gradient(135deg, var(--color-1), var(--color-2));
+            color: white; font-weight: 800; padding: 15px; border-radius: 15px; border: none; width: 100%; font-size: 1.2rem;
+            box-shadow: 0 5px 20px rgba(192, 132, 252, 0.4); margin-top: 10px; cursor: pointer; transition: 0.2s;
+        }
+        .btn-glow:hover { transform: scale(1.02); filter: brightness(1.1); }
 
-        /* --- כפתור הוספה צף (FAB) --- */
-        .fab-btn {
+        /* --- דשבורד --- */
+        .app-header {
+            padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;
+            background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px);
+            position: sticky; top: 0; z-index: 10; border-bottom: 1px solid var(--glass-border);
+        }
+        .btn-logout { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 50px; padding: 5px 15px; font-size: 0.9rem; }
+
+        /* מד קלוריות */
+        .progress-container {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 40px 0; position: relative;
+        }
+        .glow-bg {
+            position: absolute; width: 220px; height: 220px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(192, 132, 252, 0.2) 0%, rgba(15,23,42,0) 70%);
+            animation: pulse 4s infinite ease-in-out; z-index: 0;
+        }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 0.8; } 100% { transform: scale(1); opacity: 0.5; } }
+        
+        .cal-number { 
+            font-size: 4.5rem; font-weight: 900; line-height: 1; z-index: 1;
+            background: linear-gradient(to bottom, #ffffff, #e2e8f0);
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+        }
+        .cal-label { color: var(--color-2); font-weight: bold; letter-spacing: 2px; margin-top: 5px; z-index: 1; text-transform: uppercase; font-size: 0.9rem; }
+
+        /* --- הגריד החדש (במקום רשימה) --- */
+        .meals-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px 100px;
+        }
+        
+        .meal-card {
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: 20px; padding: 20px; backdrop-filter: blur(10px);
+            display: flex; flex-direction: column; align-items: center; text-align: center;
+            transition: 0.2s; cursor: pointer;
+        }
+        .meal-card:active { transform: scale(0.95); background: rgba(255,255,255,0.1); }
+
+        .card-icon { font-size: 2rem; margin-bottom: 10px; }
+        .card-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 5px; color: #e2e8f0; }
+        .card-cal { font-size: 1.4rem; font-weight: 900; color: white; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
+        .card-sub { font-size: 0.85rem; color: #94a3b8; }
+
+        /* פסים צבעוניים לכרטיסים */
+        .border-morning { border-top: 4px solid var(--color-3); } /* זהב */
+        .border-noon { border-top: 4px solid var(--color-1); }    /* ורוד */
+        .border-evening { border-top: 4px solid var(--color-2); } /* סגול */
+        .border-snack { border-top: 4px solid #4ade80; }          /* ירוק */
+
+        /* כפתור צף */
+        .fab {
             position: fixed; bottom: 30px; left: 30px;
             width: 65px; height: 65px; border-radius: 50%;
-            background: var(--pastel-mint); color: var(--bg-dark);
-            border: none; display: flex; align-items: center; justify-content: center;
-            font-size: 2rem; box-shadow: 0 10px 30px rgba(129, 235, 169, 0.4);
-            cursor: pointer; transition: 0.3s; z-index: 100;
+            background: linear-gradient(135deg, var(--color-1), var(--color-2));
+            color: white; display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; box-shadow: 0 0 25px rgba(192, 132, 252, 0.5); 
+            cursor: pointer; z-index: 100; transition: 0.3s;
         }
-        .fab-btn:hover { transform: scale(1.1) rotate(90deg); background: #9affc1; }
+        .fab:hover { transform: scale(1.1) rotate(90deg); }
 
-        /* --- חלונית הוספה (Modal) --- */
+        /* מודאלים (חלונות קופצים כהים) */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(26, 27, 38, 0.9); backdrop-filter: blur(15px);
-            z-index: 200; display: flex; align-items: center; justify-content: center;
-            opacity: 0; pointer-events: none; transition: 0.3s;
+            background: rgba(0,0,0,0.8); z-index: 200; display: none;
+            align-items: center; justify-content: center; backdrop-filter: blur(8px);
         }
-        .modal-overlay.active { opacity: 1; pointer-events: all; }
-        
-        .modal-content {
-            background: rgba(40, 42, 54, 0.9); border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 30px; padding: 30px; width: 90%; max-width: 400px;
-            transform: translateY(50px); transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        .modal-box {
+            background: #1e293b; width: 90%; max-width: 400px; padding: 25px;
+            border-radius: 24px; box-shadow: 0 0 40px rgba(0,0,0,0.5); border: 1px solid var(--glass-border);
+            animation: slideUp 0.3s ease;
         }
-        .modal-overlay.active .modal-content { transform: translateY(0); }
-        .close-modal { position: absolute; top: 20px; left: 20px; font-size: 1.5rem; cursor: pointer; opacity: 0.6; }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        /* עזרים */
+        /* רשימת פריטים בתוך המודאל */
+        .item-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
         .password-wrapper { position: relative; width: 100%; }
         .password-toggle { position: absolute; left: 15px; top: 18px; color: #94a3b8; cursor: pointer; }
         .hidden { display: none !important; }
-        .error-msg { background: rgba(242, 166, 155, 0.2); color: var(--pastel-peach); padding: 15px; border-radius: 15px; border: 1px solid var(--pastel-peach); margin-bottom: 20px; display: none; }
-        .link-btn { color: var(--pastel-lavender); cursor: pointer; font-weight: 700; text-decoration: underline; }
+        .error-msg { background: rgba(239, 68, 68, 0.2); color: #fca5a5; padding: 10px; border-radius: 8px; border: 1px solid #ef4444; margin-bottom: 15px; display: none; }
+        .link-btn { color: var(--color-2); cursor: pointer; font-weight: 700; text-decoration: underline; }
+        .close-btn { float: left; font-size: 1.5rem; cursor: pointer; color: #94a3b8; }
     </style>
 </head>
 <body>
 
 <div id="loginScreen" class="auth-container">
-    <h1 class="pastel-text" style="font-size: 3.5rem; line-height: 1.2;">Calm<br>Diet</h1>
-    <p style="color: #a0a0a0; font-size: 1.2rem; margin-bottom: 30px;">איזון עדין.</p>
+    <h1 class="glow-text" style="font-size: 3.5rem; line-height: 1.2;">Fitness<br>Pro</h1>
+    <p style="color: #94a3b8; font-size: 1.2rem; margin-bottom: 30px;">האנרגיה שלך מתחילה כאן.</p>
+    
     <div id="loginError" class="error-msg"></div>
-    <input type="email" id="loginEmail" class="input-dark" placeholder="אימייל" dir="ltr">
+
+    <input type="email" id="loginEmail" class="input-glass" placeholder="אימייל" dir="ltr">
     <div class="password-wrapper">
-        <input type="password" id="loginPass" class="input-dark" placeholder="סיסמה..." dir="ltr">
+        <input type="password" id="loginPass" class="input-glass" placeholder="הסיסמה הסודית..." dir="ltr">
         <i class="bi bi-eye password-toggle" onclick="togglePass('loginPass', this)"></i>
     </div>
-    <button onclick="login()" class="btn-pastel">כניסה</button>
-    <div class="text-center mt-4"><span style="color: #a0a0a0;">חדשה?</span> <span onclick="showRegister()" class="link-btn">הרשמה</span></div>
+    <button onclick="login()" class="btn-glow">כניסה למערכת</button>
+    <div class="text-center mt-3"><span style="color: #94a3b8;">חדשה?</span> <span onclick="showRegister()" class="link-btn">הרשמה</span></div>
 </div>
 
 <div id="registerScreen" class="auth-container hidden">
-    <h1 class="pastel-text">הצטרפות</h1>
+    <h1 class="glow-text">הצטרפי</h1>
+    <p style="color: #94a3b8; margin-bottom: 30px;">התחילי את השינוי היום.</p>
     <div id="regError" class="error-msg"></div>
-    <input type="email" id="regEmail" class="input-dark" placeholder="אימייל" dir="ltr">
+    <input type="email" id="regEmail" class="input-glass" placeholder="אימייל" dir="ltr">
     <div class="password-wrapper">
-        <input type="password" id="regPass" class="input-dark" placeholder="סיסמה (8+ תווים)" dir="ltr">
+        <input type="password" id="regPass" class="input-glass" placeholder="סיסמה (8+ תווים)" dir="ltr">
         <i class="bi bi-eye password-toggle" onclick="togglePass('regPass', this)"></i>
     </div>
-    <button onclick="register()" class="btn-pastel">יצירת חשבון</button>
-    <div class="text-center mt-4"><span onclick="showLogin()" class="link-btn">יש לי חשבון</span></div>
+    <button onclick="register()" class="btn-glow">יצירת חשבון</button>
+    <div class="text-center mt-3"><span onclick="showLogin()" class="link-btn">חזרה לכניסה</span></div>
 </div>
 
 <div id="appScreen" class="hidden">
     <div class="app-header">
-        <div class="pastel-text" style="font-size: 1.5rem; margin:0; text-shadow:none;">היום שלי</div>
+        <div class="glow-text" style="font-size: 1.5rem; margin:0; text-shadow:none;">My Tracker</div>
         <button onclick="logout()" class="btn-logout">יציאה</button>
     </div>
 
@@ -170,55 +192,85 @@
 
     <div class="meals-grid" id="mealsGrid"></div>
 
-    <button class="fab-btn" onclick="openModal()"><i class="bi bi-plus-lg"></i></button>
+    <div class="fab" onclick="openAddModal()"><i class="bi bi-plus-lg"></i></div>
 </div>
 
 <div class="modal-overlay" id="addModal">
-    <div class="modal-content">
-        <i class="bi bi-x-lg close-modal" onclick="closeModal()"></i>
-        <h3 class="pastel-text text-center mb-4">הוספת משהו טעים</h3>
-        <input type="text" id="foodName" class="input-dark" placeholder="מה אכלת? 🥑">
-        <input type="number" id="foodCal" class="input-dark" placeholder="כמה קלוריות?">
-        <button onclick="addMeal()" class="btn-pastel mt-3">הוספה ליומן</button>
+    <div class="modal-box">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="m-0 fw-bold text-white">הוספת ארוחה</h4>
+            <i class="bi bi-x-lg close-btn" onclick="closeModal('addModal')"></i>
+        </div>
+        
+        <label class="small text-muted mb-1">איזו ארוחה זו?</label>
+        <select id="mealType" class="input-glass mb-3" style="padding:10px;">
+            <option value="morning" style="color:black">🌅 בוקר</option>
+            <option value="noon" style="color:black">☀️ צהריים</option>
+            <option value="evening" style="color:black">🌙 ערב</option>
+            <option value="snack" style="color:black">🍪 נשנוש</option>
+        </select>
+
+        <label class="small text-muted mb-1">מה אכלת?</label>
+        <input type="text" id="foodName" class="input-glass mb-3" placeholder="למשל: יוגורט">
+
+        <label class="small text-muted mb-1">קלוריות</label>
+        <input type="number" id="foodCal" class="input-glass mb-4" placeholder="0">
+
+        <button onclick="addMeal()" class="btn-glow">שמירה</button>
+    </div>
+</div>
+
+<div class="modal-overlay" id="viewModal">
+    <div class="modal-box">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="m-0 fw-bold text-white" id="viewTitle">ארוחת בוקר</h4>
+            <i class="bi bi-x-lg close-btn" onclick="closeModal('viewModal')"></i>
+        </div>
+        
+        <div id="itemsList" style="max-height: 300px; overflow-y: auto; color: white;">
+            </div>
     </div>
 </div>
 
 <script>
     const API_URL = '/api';
     let currentUser = null;
+    let allMeals = []; 
 
-    // --- ממשק משתמש ---
     function togglePass(inputId, icon) {
         const input = document.getElementById(inputId);
         input.type = input.type === "password" ? "text" : "password";
         icon.classList.toggle("bi-eye"); icon.classList.toggle("bi-eye-slash");
     }
+
     function showError(elementId, msg) { const el = document.getElementById(elementId); el.innerText = msg; el.style.display = 'block'; }
     function clearErrors() { document.getElementById('loginError').style.display = 'none'; document.getElementById('regError').style.display = 'none'; }
-    
-    // --- מודל הוספה ---
-    function openModal() { document.getElementById('addModal').classList.add('active'); }
-    function closeModal() { document.getElementById('addModal').classList.remove('active'); }
 
-    // --- ניווט ואתחול ---
-    function init() {
-        try {
-            const savedUser = localStorage.getItem('dietUser');
-            if (savedUser) { 
-                currentUser = JSON.parse(savedUser); 
-                document.getElementById('loginScreen').classList.add('hidden');
-                document.getElementById('appScreen').classList.remove('hidden');
-                loadData(); 
-            }
-        } catch(e) { console.log(e); }
+    // מודאלים
+    function openAddModal() { 
+        document.getElementById('addModal').style.display = 'flex'; 
+        document.getElementById('foodName').value = '';
+        document.getElementById('foodCal').value = '';
     }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+    function init() {
+        const savedUser = localStorage.getItem('dietUser');
+        if (savedUser) { 
+            currentUser = JSON.parse(savedUser); 
+            // מסתיר כניסה ומציג אפליקציה מיד
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('appScreen').classList.remove('hidden');
+            loadData(); 
+        }
+    }
+
     function showLogin() { clearErrors(); hideAll(); document.getElementById('loginScreen').classList.remove('hidden'); }
     function showRegister() { clearErrors(); hideAll(); document.getElementById('registerScreen').classList.remove('hidden'); }
     function showApp() { hideAll(); document.getElementById('appScreen').classList.remove('hidden'); loadData(); }
     function hideAll() { document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('registerScreen').classList.add('hidden'); document.getElementById('appScreen').classList.add('hidden'); }
     function logout() { localStorage.removeItem('dietUser'); currentUser = null; showLogin(); }
 
-    // --- לוגיקה (Auth) ---
     async function register() {
         clearErrors();
         const email = document.getElementById('regEmail').value; const pass = document.getElementById('regPass').value;
@@ -226,7 +278,7 @@
         try {
             const res = await fetch(`${API_URL}/auth/register`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ email, password: pass }) });
             if (res.ok) { alert('נרשמת בהצלחה!'); showLogin(); } else { showError('regError', await res.text()); }
-        } catch(e) { showError('regError', 'שגיאת תקשורת'); }
+        } catch(e) { showError('regError', 'שגיאה'); }
     }
 
     async function login() {
@@ -241,80 +293,116 @@
                 localStorage.setItem('dietUser', JSON.stringify(currentUser));
                 showApp();
             } else { showError('loginError', 'פרטים שגויים'); }
-        } catch(e) { showError('loginError', 'שגיאת תקשורת'); }
+        } catch(e) { showError('loginError', 'שגיאה'); }
     }
 
-    // --- לוגיקה (Data - החלק החדש של הבלוקים!) ---
     async function loadData() {
         if (!currentUser) return;
-        
-        // טעינת סך הכל
         try {
             const resStats = await fetch(`${API_URL}/stats?userId=${currentUser.id}`);
             const dataStats = await resStats.json();
             document.getElementById('totalCalories').innerText = dataStats.dailyCalories || 0;
-        } catch(e) {}
 
-        // טעינת ארוחות וסידור בבלוקים
-        try {
             const resMeals = await fetch(`${API_URL}/meals?userId=${currentUser.id}`);
-            const meals = await resMeals.json();
-            renderMealBlocks(meals);
+            allMeals = await resMeals.json();
+            renderGrid(allMeals);
         } catch(e) {}
     }
 
-    function renderMealBlocks(meals) {
-        const grid = document.getElementById('mealsGrid');
-        grid.innerHTML = '';
-
-        // אתחול קבוצות
-        const slots = {
-            morning: { title: 'בוקר טוב', icon: 'bi-sunrise', cal: 0, count: 0, css: 'block-morning' },
-            noon:    { title: 'צהריים', icon: 'bi-sun', cal: 0, count: 0, css: 'block-noon' },
-            evening: { title: 'ערב רגוע', icon: 'bi-moon-stars', cal: 0, count: 0, css: 'block-evening' },
-            snack:   { title: 'נשנושים', icon: 'bi-cookie', cal: 0, count: 0, css: 'block-snack' }
+    function renderGrid(meals) {
+        const categories = {
+            morning: { title: 'בוקר', icon: '🌅', cal: 0, items: [], css: 'border-morning' },
+            noon:    { title: 'צהריים', icon: '☀️', cal: 0, items: [], css: 'border-noon' },
+            evening: { title: 'ערב', icon: '🌙', cal: 0, items: [], css: 'border-evening' },
+            snack:   { title: 'נשנוש', icon: '🍪', cal: 0, items: [], css: 'border-snack' }
         };
 
-        // מיון הארוחות לקבוצות לפי שעה
         meals.forEach(m => {
-            const hour = new Date(m.date).getHours();
-            let slotKey = 'snack';
-            if (hour >= 5 && hour < 12) slotKey = 'morning';
-            else if (hour >= 12 && hour < 17) slotKey = 'noon';
-            else if (hour >= 17 && hour < 22) slotKey = 'evening';
-            
-            slots[slotKey].cal += m.calories;
-            slots[slotKey].count++;
+            const h = new Date(m.date).getHours();
+            let key = 'snack';
+            if(h === 9) key = 'morning';
+            else if(h === 14) key = 'noon';
+            else if(h === 20) key = 'evening';
+            else if (h >= 5 && h < 12) key = 'morning';
+            else if (h >= 12 && h < 17) key = 'noon';
+            else if (h >= 17 && h < 22) key = 'evening';
+            categories[key].cal += m.calories;
+            categories[key].items.push(m);
         });
 
-        // יצירת הבלוקים ב-HTML
-        for (const key in slots) {
-            const s = slots[key];
-            const isEmpty = s.count === 0;
+        const grid = document.getElementById('mealsGrid');
+        grid.innerHTML = '';
+        for (const key in categories) {
+            const cat = categories[key];
             grid.innerHTML += `
-                <div class="meal-block ${s.css} ${isEmpty ? 'empty-block' : ''}">
-                    <i class="bi ${s.icon} block-icon" style="color: var(--pastel-${key === 'morning' ? 'mint' : key === 'noon' ? 'sky' : key === 'evening' ? 'lavender' : 'peach'})"></i>
-                    <div class="block-title">${s.title}</div>
-                    <div class="block-cal">${s.cal > 0 ? s.cal : '-'}</div>
-                    <div class="block-count">${s.count > 0 ? s.count + ' פריטים' : 'ריק'}</div>
+                <div class="meal-card ${cat.css}" onclick="showCategoryDetails('${key}')">
+                    <div class="card-icon">${cat.icon}</div>
+                    <div class="card-title">${cat.title}</div>
+                    <div class="card-cal">${cat.cal}</div>
+                    <div class="card-sub">${cat.items.length} פריטים</div>
                 </div>`;
         }
     }
 
-    async function addMeal() {
-        const name = document.getElementById('foodName');
-        const cal = document.getElementById('foodCal');
-        if(!name.value || !cal.value) return;
+    function showCategoryDetails(key) {
+        const titles = { morning: 'ארוחת בוקר', noon: 'ארוחת צהריים', evening: 'ארוחת ערב', snack: 'נשנושים' };
+        document.getElementById('viewTitle').innerText = titles[key];
         
-        const localTime = (new Date(new Date() - new Date().getTimezoneOffset() * 60000)).toISOString().slice(0, -1);
+        const items = allMeals.filter(m => {
+            const h = new Date(m.date).getHours();
+            if (key === 'morning') return h === 9 || (h >= 5 && h < 12 && h !== 14 && h !== 20);
+            if (key === 'noon') return h === 14 || (h >= 12 && h < 17 && h !== 9 && h !== 20);
+            if (key === 'evening') return h === 20 || (h >= 17 && h < 22 && h !== 9 && h !== 14);
+            return (h < 5 || h >= 22) && h !== 9 && h !== 14 && h !== 20;
+        });
+
+        const list = document.getElementById('itemsList');
+        list.innerHTML = '';
+        if (items.length === 0) list.innerHTML = '<div class="text-muted text-center py-3">ריק</div>';
+        items.forEach(m => {
+            list.innerHTML += `
+                <div class="item-row">
+                    <div>${m.name}</div>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-light text-dark opacity-75">${m.calories}</span>
+                        <i class="bi bi-trash text-danger" style="cursor:pointer" onclick="deleteMeal(${m.id})"></i>
+                    </div>
+                </div>`;
+        });
+        document.getElementById('viewModal').style.display = 'flex';
+    }
+
+    async function addMeal() {
+        const type = document.getElementById('mealType').value;
+        const name = document.getElementById('foodName').value;
+        const cal = document.getElementById('foodCal').value;
+        if(!name || !cal) return alert('נא למלא פרטים');
+
+        let date = new Date();
+        if (type === 'morning') date.setHours(9, 0, 0);
+        else if (type === 'noon') date.setHours(14, 0, 0);
+        else if (type === 'evening') date.setHours(20, 0, 0);
+        else date.setHours(23, 0, 0);
+
+        const dateStr = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().slice(0, -1);
+
         try {
-            await fetch(`${API_URL}/meals`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ name: name.value, calories: parseInt(cal.value), date: localTime, userId: currentUser.id }) });
-            name.value = ''; cal.value = '';
-            closeModal(); // סגירת החלונית
+            await fetch(`${API_URL}/meals`, {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ name, calories: parseInt(cal), date: dateStr, userId: currentUser.id })
+            });
+            closeModal('addModal');
             loadData();
         } catch(e) {}
     }
 
+    async function deleteMeal(id) {
+        if(!confirm('למחוק?')) return;
+        await fetch(`${API_URL}/meals/${id}`, { method: 'DELETE' });
+        closeModal('viewModal');
+        loadData();
+    }
+    
     init();
 </script>
 </body>
