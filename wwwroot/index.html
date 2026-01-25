@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Dreamy Diet</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍎</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍏</text></svg>">
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
@@ -15,7 +15,6 @@
             --bg-dark: #0f172a;
             --glass-bg: rgba(30, 41, 59, 0.7);
             --glass-border: rgba(255, 255, 255, 0.1);
-            /* פלטת צבעים חדשה: פסטל זוהר על כהה */
             --color-1: #f472b6; /* ורוד */
             --color-2: #c084fc; /* סגול לילך */
             --color-3: #fbbf24; /* זהב רך */
@@ -30,7 +29,7 @@
             overflow-x: hidden;
         }
 
-        /* טקסט זוהר וצבעוני (הדבר שאהבת!) */
+        /* טקסט זוהר וצבעוני */
         .glow-text {
             font-weight: 900;
             background: linear-gradient(to right, var(--color-1), var(--color-2), var(--color-3));
@@ -86,7 +85,7 @@
         }
         .cal-label { color: var(--color-2); font-weight: bold; letter-spacing: 2px; margin-top: 5px; z-index: 1; text-transform: uppercase; font-size: 0.9rem; }
 
-        /* --- הגריד החדש (במקום רשימה) --- */
+        /* --- הגריד החדש --- */
         .meals-grid {
             display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px 100px;
         }
@@ -166,244 +165,3 @@
 </div>
 
 <div id="registerScreen" class="auth-container hidden">
-    <h1 class="glow-text">הצטרפי</h1>
-    <p style="color: #94a3b8; margin-bottom: 30px;">התחילי את השינוי היום.</p>
-    <div id="regError" class="error-msg"></div>
-    <input type="email" id="regEmail" class="input-glass" placeholder="אימייל" dir="ltr">
-    <div class="password-wrapper">
-        <input type="password" id="regPass" class="input-glass" placeholder="סיסמה (8+ תווים)" dir="ltr">
-        <i class="bi bi-eye password-toggle" onclick="togglePass('regPass', this)"></i>
-    </div>
-    <button onclick="register()" class="btn-glow">יצירת חשבון</button>
-    <div class="text-center mt-3"><span onclick="showLogin()" class="link-btn">חזרה לכניסה</span></div>
-</div>
-
-<div id="appScreen" class="hidden">
-    <div class="app-header">
-        <div class="glow-text" style="font-size: 1.5rem; margin:0; text-shadow:none;">My Tracker</div>
-        <button onclick="logout()" class="btn-logout">יציאה</button>
-    </div>
-
-    <div class="progress-container">
-        <div class="glow-bg"></div>
-        <div class="cal-number" id="totalCalories">0</div>
-        <div class="cal-label">קלוריות היום</div>
-    </div>
-
-    <div class="meals-grid" id="mealsGrid"></div>
-
-    <div class="fab" onclick="openAddModal()"><i class="bi bi-plus-lg"></i></div>
-</div>
-
-<div class="modal-overlay" id="addModal">
-    <div class="modal-box">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="m-0 fw-bold text-white">הוספת ארוחה</h4>
-            <i class="bi bi-x-lg close-btn" onclick="closeModal('addModal')"></i>
-        </div>
-        
-        <label class="small text-muted mb-1">איזו ארוחה זו?</label>
-        <select id="mealType" class="input-glass mb-3" style="padding:10px;">
-            <option value="morning" style="color:black">🌅 בוקר</option>
-            <option value="noon" style="color:black">☀️ צהריים</option>
-            <option value="evening" style="color:black">🌙 ערב</option>
-            <option value="snack" style="color:black">🍪 נשנוש</option>
-        </select>
-
-        <label class="small text-muted mb-1">מה אכלת?</label>
-        <input type="text" id="foodName" class="input-glass mb-3" placeholder="למשל: יוגורט">
-
-        <label class="small text-muted mb-1">קלוריות</label>
-        <input type="number" id="foodCal" class="input-glass mb-4" placeholder="0">
-
-        <button onclick="addMeal()" class="btn-glow">שמירה</button>
-    </div>
-</div>
-
-<div class="modal-overlay" id="viewModal">
-    <div class="modal-box">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="m-0 fw-bold text-white" id="viewTitle">ארוחת בוקר</h4>
-            <i class="bi bi-x-lg close-btn" onclick="closeModal('viewModal')"></i>
-        </div>
-        
-        <div id="itemsList" style="max-height: 300px; overflow-y: auto; color: white;">
-            </div>
-    </div>
-</div>
-
-<script>
-    const API_URL = '/api';
-    let currentUser = null;
-    let allMeals = []; 
-
-    function togglePass(inputId, icon) {
-        const input = document.getElementById(inputId);
-        input.type = input.type === "password" ? "text" : "password";
-        icon.classList.toggle("bi-eye"); icon.classList.toggle("bi-eye-slash");
-    }
-
-    function showError(elementId, msg) { const el = document.getElementById(elementId); el.innerText = msg; el.style.display = 'block'; }
-    function clearErrors() { document.getElementById('loginError').style.display = 'none'; document.getElementById('regError').style.display = 'none'; }
-
-    // מודאלים
-    function openAddModal() { 
-        document.getElementById('addModal').style.display = 'flex'; 
-        document.getElementById('foodName').value = '';
-        document.getElementById('foodCal').value = '';
-    }
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
-    function init() {
-        const savedUser = localStorage.getItem('dietUser');
-        if (savedUser) { 
-            currentUser = JSON.parse(savedUser); 
-            // מסתיר כניסה ומציג אפליקציה מיד
-            document.getElementById('loginScreen').classList.add('hidden');
-            document.getElementById('appScreen').classList.remove('hidden');
-            loadData(); 
-        }
-    }
-
-    function showLogin() { clearErrors(); hideAll(); document.getElementById('loginScreen').classList.remove('hidden'); }
-    function showRegister() { clearErrors(); hideAll(); document.getElementById('registerScreen').classList.remove('hidden'); }
-    function showApp() { hideAll(); document.getElementById('appScreen').classList.remove('hidden'); loadData(); }
-    function hideAll() { document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('registerScreen').classList.add('hidden'); document.getElementById('appScreen').classList.add('hidden'); }
-    function logout() { localStorage.removeItem('dietUser'); currentUser = null; showLogin(); }
-
-    async function register() {
-        clearErrors();
-        const email = document.getElementById('regEmail').value; const pass = document.getElementById('regPass').value;
-        if(!email || !pass) return showError('regError', 'חסרים פרטים');
-        try {
-            const res = await fetch(`${API_URL}/auth/register`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ email, password: pass }) });
-            if (res.ok) { alert('נרשמת בהצלחה!'); showLogin(); } else { showError('regError', await res.text()); }
-        } catch(e) { showError('regError', 'שגיאה'); }
-    }
-
-    async function login() {
-        clearErrors();
-        const email = document.getElementById('loginEmail').value; const pass = document.getElementById('loginPass').value;
-        if(!email || !pass) return showError('loginError', 'נא למלא פרטים');
-        try {
-            const res = await fetch(`${API_URL}/auth/login`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ email, password: pass }) });
-            if (res.ok) {
-                const data = await res.json();
-                currentUser = { id: data.userId, email: data.email };
-                localStorage.setItem('dietUser', JSON.stringify(currentUser));
-                showApp();
-            } else { showError('loginError', 'פרטים שגויים'); }
-        } catch(e) { showError('loginError', 'שגיאה'); }
-    }
-
-    async function loadData() {
-        if (!currentUser) return;
-        try {
-            const resStats = await fetch(`${API_URL}/stats?userId=${currentUser.id}`);
-            const dataStats = await resStats.json();
-            document.getElementById('totalCalories').innerText = dataStats.dailyCalories || 0;
-
-            const resMeals = await fetch(`${API_URL}/meals?userId=${currentUser.id}`);
-            allMeals = await resMeals.json();
-            renderGrid(allMeals);
-        } catch(e) {}
-    }
-
-    function renderGrid(meals) {
-        const categories = {
-            morning: { title: 'בוקר', icon: '🌅', cal: 0, items: [], css: 'border-morning' },
-            noon:    { title: 'צהריים', icon: '☀️', cal: 0, items: [], css: 'border-noon' },
-            evening: { title: 'ערב', icon: '🌙', cal: 0, items: [], css: 'border-evening' },
-            snack:   { title: 'נשנוש', icon: '🍪', cal: 0, items: [], css: 'border-snack' }
-        };
-
-        meals.forEach(m => {
-            const h = new Date(m.date).getHours();
-            let key = 'snack';
-            if(h === 9) key = 'morning';
-            else if(h === 14) key = 'noon';
-            else if(h === 20) key = 'evening';
-            else if (h >= 5 && h < 12) key = 'morning';
-            else if (h >= 12 && h < 17) key = 'noon';
-            else if (h >= 17 && h < 22) key = 'evening';
-            categories[key].cal += m.calories;
-            categories[key].items.push(m);
-        });
-
-        const grid = document.getElementById('mealsGrid');
-        grid.innerHTML = '';
-        for (const key in categories) {
-            const cat = categories[key];
-            grid.innerHTML += `
-                <div class="meal-card ${cat.css}" onclick="showCategoryDetails('${key}')">
-                    <div class="card-icon">${cat.icon}</div>
-                    <div class="card-title">${cat.title}</div>
-                    <div class="card-cal">${cat.cal}</div>
-                    <div class="card-sub">${cat.items.length} פריטים</div>
-                </div>`;
-        }
-    }
-
-    function showCategoryDetails(key) {
-        const titles = { morning: 'ארוחת בוקר', noon: 'ארוחת צהריים', evening: 'ארוחת ערב', snack: 'נשנושים' };
-        document.getElementById('viewTitle').innerText = titles[key];
-        
-        const items = allMeals.filter(m => {
-            const h = new Date(m.date).getHours();
-            if (key === 'morning') return h === 9 || (h >= 5 && h < 12 && h !== 14 && h !== 20);
-            if (key === 'noon') return h === 14 || (h >= 12 && h < 17 && h !== 9 && h !== 20);
-            if (key === 'evening') return h === 20 || (h >= 17 && h < 22 && h !== 9 && h !== 14);
-            return (h < 5 || h >= 22) && h !== 9 && h !== 14 && h !== 20;
-        });
-
-        const list = document.getElementById('itemsList');
-        list.innerHTML = '';
-        if (items.length === 0) list.innerHTML = '<div class="text-muted text-center py-3">ריק</div>';
-        items.forEach(m => {
-            list.innerHTML += `
-                <div class="item-row">
-                    <div>${m.name}</div>
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="badge bg-light text-dark opacity-75">${m.calories}</span>
-                        <i class="bi bi-trash text-danger" style="cursor:pointer" onclick="deleteMeal(${m.id})"></i>
-                    </div>
-                </div>`;
-        });
-        document.getElementById('viewModal').style.display = 'flex';
-    }
-
-    async function addMeal() {
-        const type = document.getElementById('mealType').value;
-        const name = document.getElementById('foodName').value;
-        const cal = document.getElementById('foodCal').value;
-        if(!name || !cal) return alert('נא למלא פרטים');
-
-        let date = new Date();
-        if (type === 'morning') date.setHours(9, 0, 0);
-        else if (type === 'noon') date.setHours(14, 0, 0);
-        else if (type === 'evening') date.setHours(20, 0, 0);
-        else date.setHours(23, 0, 0);
-
-        const dateStr = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().slice(0, -1);
-
-        try {
-            await fetch(`${API_URL}/meals`, {
-                method: 'POST', headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ name, calories: parseInt(cal), date: dateStr, userId: currentUser.id })
-            });
-            closeModal('addModal');
-            loadData();
-        } catch(e) {}
-    }
-
-    async function deleteMeal(id) {
-        if(!confirm('למחוק?')) return;
-        await fetch(`${API_URL}/meals/${id}`, { method: 'DELETE' });
-        closeModal('viewModal');
-        loadData();
-    }
-    
-    init();
-</script>
-</body>
-</html>
