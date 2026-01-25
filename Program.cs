@@ -3,16 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// שינוי: קריאת משתנה סביבה כללי
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
                        ?? Environment.GetEnvironmentVariable("DATABASE_URL");
 
-// שינוי: שימוש ב-PostgreSQL
 builder.Services.AddDbContext<DietDb>(opt => 
     opt.UseNpgsql(connectionString));
 
 builder.Services.AddCors();
-
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -25,6 +22,8 @@ app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
+// --- API Endpoints ---
+
 app.MapGet("/api/meals", async (DietDb db) => 
     await db.Meals.OrderByDescending(m => m.Date).ToListAsync());
 
@@ -34,6 +33,17 @@ app.MapPost("/api/meals", async (DietDb db, [FromBody] Meal meal) => {
     await db.SaveChangesAsync();
     return Results.Ok(meal);
 });
+
+// === הוספנו את החלק הזה למחיקה ===
+app.MapDelete("/api/meals/{id}", async (DietDb db, int id) => {
+    var meal = await db.Meals.FindAsync(id);
+    if (meal is null) return Results.NotFound();
+    
+    db.Meals.Remove(meal);
+    await db.SaveChangesAsync();
+    return Results.Ok();
+});
+// =================================
 
 app.MapGet("/api/stats", async (DietDb db) => {
     var today = DateTime.Today;
