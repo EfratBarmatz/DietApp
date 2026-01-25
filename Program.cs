@@ -95,9 +95,25 @@ bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)
 
 // הרשמה
 app.MapPost("/api/auth/register", async (DietDb db, [FromBody] UserRegisterDto request) => {
-    if (await db.Users.AnyAsync(u => u.Email == request.Email))
-        return Results.BadRequest("המייל הזה כבר קיים במערכת");
+    // 1. בדיקת פורמט מייל (בסיסית)
+    if (string.IsNullOrWhiteSpace(request.Email) || !request.Email.Contains("@") || !request.Email.Contains("."))
+        return Results.BadRequest("כתובת המייל אינה תקינה");
 
+    // 2. בדיקת חוזק סיסמה
+    if (string.IsNullOrWhiteSpace(request.Password) || request.Password.Length < 8)
+        return Results.BadRequest("הסיסמה חייבת להכיל לפחות 8 תווים");
+
+    if (!request.Password.Any(char.IsDigit)) // חייב להכיל מספר
+        return Results.BadRequest("הסיסמה חייבת להכיל לפחות ספרה אחת");
+
+    if (!request.Password.Any(char.IsLetter)) // חייב להכיל אות
+        return Results.BadRequest("הסיסמה חייבת להכיל לפחות אות אחת");
+
+    // 3. בדיקה אם המשתמש כבר קיים
+    if (await db.Users.AnyAsync(u => u.Email == request.Email))
+        return Results.BadRequest("המייל הזה כבר רשום במערכת");
+
+    // אם הכל עבר בשלום - יוצרים את המשתמש
     CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
     var user = new User {
