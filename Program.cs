@@ -1,23 +1,26 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
-using Npgsql; // חובה בשביל פוסטגרס
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// --- שלב 1: בניית מחרוזת חיבור חכמה ---
-var rawConnectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
+// --- לוגיקת חיבור ---
+string debugInfo = "Starting...";
 string connectionString = "";
+var rawUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 
 try 
 {
-    if (string.IsNullOrEmpty(rawConnectionString))
+    if (string.IsNullOrWhiteSpace(rawUrl))
     {
-        Console.WriteLine("CRITICAL ERROR: DATABASE_URL is missing!");
+        debugInfo += "\nERROR: DATABASE_URL environment variable is null or empty!";
     }
     else
     {
-        // הפונקציה שממירה את הכתובת של רנדר לפורמט של סי-שארפ
-        var uri = new Uri(rawConnectionString);
+        debugInfo += $"\nFound DATABASE_URL (Length: {rawUrl.Length})";
+        
+        // ניסיון פענוח
+        var uri = new Uri(rawUrl);
         var userInfo = uri.UserInfo.Split(':');
         var builderDb = new NpgsqlConnectionStringBuilder
         {
@@ -26,84 +29,69 @@ try
             Username = userInfo[0],
             Password = userInfo[1],
             Database = uri.AbsolutePath.Trim('/'),
-            SslMode = SslMode.Disable // בגרסה חינמית פנימית לפעמים ה-SSL עושה בעיות
+            SslMode = SslMode.Disable
         };
         connectionString = builderDb.ToString();
-        Console.WriteLine("Connection String built successfully.");
+        debugInfo += "\nParsing successful! Connection string ready.";
     }
 }
 catch (Exception ex)
 {
-    Console.WriteLine($"Error parsing connection string: {ex.Message}");
+    debugInfo += $"\nParsing FAILED: {ex.Message}";
+    connectionString = ""; // Reset on error
 }
 
-// --- שלב 2: הגדרת ה-DB ---
+// הגדרת ה-DB
 builder.Services.AddDbContext<DietDb>(opt => 
-    opt.UseNpgsql(connectionString));
+{
+    if (!string.IsNullOrEmpty(connectionString))
+        opt.UseNpgsql(connectionString);
+});
 
 builder.Services.AddCors();
 var app = builder.Build();
-
-// --- שלב 3: יצירת טבלאות (עם לוגים לשגיאות) ---
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<DietDb>();
-    try 
-    { 
-        Console.WriteLine("Attempting to connect to DB...");
-        db.Database.EnsureCreated(); 
-        Console.WriteLine("DB Connection & Creation Successful!");
-    } 
-    catch (Exception ex) 
-    { 
-        Console.WriteLine($"DB ERROR: {ex.Message}"); 
-        if (ex.InnerException != null) Console.WriteLine($"Inner: {ex.InnerException.Message}");
-    }
-}
 
 app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
-// --- API Endpoints ---
+// --- דף אבחון מיוחד ---
+app.MapGet("/api/debug", () => Results.Text(debugInfo));
 
-// בדיקת תקינות מיוחדת - כנס לקישור הזה כדי לראות מה הבעיה
-app.MapGet("/api/test-db", async (DietDb db) => {
-    try {
-        var count = await db.Meals.CountAsync();
-        return Results.Ok($"Success! DB is connected. Found {count} meals.");
-    } catch (Exception ex) {
-        return Results.BadRequest($"Error: {ex.Message} \nInner: {ex.InnerException?.Message}");
-    }
+// --- API רגיל ---
+app.MapGet("/api/meals", async (DietDb db) => 
+{
+    if (string.IsNullOrEmpty(connectionString)) return Results.Problem("Database not configured. Check /api/debug");
+    return Results.Ok(await db.Meals.OrderByDescending(m => m.Date).ToListAsync());
 });
 
-app.MapGet("/api/meals", async (DietDb db) => 
-    await db.Meals.OrderByDescending(m => m.Date).ToListAsync());
-
 app.MapPost("/api/meals", async (DietDb db, [FromBody] Meal meal) => {
+    if (string.IsNullOrEmpty(connectionString)) return Results.Problem("Database not configured");
     meal.Date = DateTime.Now;
     db.Meals.Add(meal);
     await db.SaveChangesAsync();
     return Results.Ok(meal);
 });
 
-app.MapDelete("/api/meals/{id}", async (DietDb db, int id) => {
-    var meal = await db.Meals.FindAsync(id);
-    if (meal is null) return Results.NotFound();
-    db.Meals.Remove(meal);
-    await db.SaveChangesAsync();
-    return Results.Ok();
-});
-
 app.MapGet("/api/stats", async (DietDb db) => {
+    if (string.IsNullOrEmpty(connectionString)) return Results.Problem("Database not configured");
     var today = DateTime.Today;
     var calories = await db.Meals.Where(m => m.Date >= today).SumAsync(m => m.Calories);
     return Results.Ok(new { DailyCalories = calories });
 });
 
+// יצירת טבלאות בטוחה
+using (var scope = app.Services.CreateScope())
+{
+    if (!string.IsNullOrEmpty(connectionString))
+    {
+        var db = scope.ServiceProvider.GetRequiredService<DietDb>();
+        try { db.Database.EnsureCreated(); } catch { }
+    }
+}
+
 app.Run();
 
-// --- Models ---
 public class DietDb : DbContext {
     public DietDb(DbContextOptions<DietDb> options) : base(options) {}
     public DbSet<Meal> Meals { get; set; }
