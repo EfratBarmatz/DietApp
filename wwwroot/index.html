@@ -9,95 +9,17 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     
     <style>
-        :root {
-            --primary-color: #6366f1; /* סגול אינדיגו מודרני */
-            --secondary-color: #a855f7;
-            --bg-color: #f8fafc;
-        }
-
-        body {
-            font-family: 'Heebo', sans-serif;
-            background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0;
-            color: #334155;
-        }
-
-        .app-container {
-            width: 100%;
-            max-width: 500px;
-            padding: 20px;
-        }
-
-        .card-custom {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: none;
-            border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
-            transition: transform 0.3s ease;
-        }
-
-        .auth-header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 40px 30px;
-            text-align: center;
-            border-bottom-left-radius: 30px;
-            border-bottom-right-radius: 30px;
-            margin-bottom: 20px;
-        }
-
-        .btn-gradient {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 12px;
-            font-weight: bold;
-            transition: opacity 0.2s;
-        }
-        .btn-gradient:hover { opacity: 0.9; color: white; }
-
-        .form-control {
-            background: #f1f5f9;
-            border: none;
-            padding: 12px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-        }
-        .form-control:focus { background: white; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
-
-        /* עיצוב רשימת הארוחות */
-        .meal-item {
-            background: white;
-            border-radius: 16px;
-            padding: 15px;
-            margin-bottom: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-            border: 1px solid #f1f5f9;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: transform 0.2s;
-        }
-        .meal-item:hover { transform: translateY(-2px); }
-
-        .calories-badge {
-            background: #ecfdf5;
-            color: #059669;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 0.9em;
-        }
-
-        /* מסכים */
+        :root { --primary-color: #6366f1; --secondary-color: #a855f7; }
+        body { font-family: 'Heebo', sans-serif; background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; color: #334155; }
+        .app-container { width: 100%; max-width: 500px; padding: 20px; }
+        .card-custom { background: rgba(255, 255, 255, 0.95); border: none; border-radius: 24px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08); overflow: hidden; }
+        .auth-header { background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white; padding: 40px 30px; text-align: center; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; margin-bottom: 20px; }
+        .btn-gradient { background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; width: 100%; }
+        .form-control { background: #f1f5f9; border: none; padding: 12px; border-radius: 12px; margin-bottom: 15px; }
         .hidden { display: none !important; }
+        .error-msg { color: #dc2626; background: #fee2e2; padding: 10px; border-radius: 8px; font-size: 0.9em; margin-bottom: 15px; display: none; }
+        .meal-item { background: white; border-radius: 16px; padding: 15px; margin-bottom: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); display: flex; justify-content: space-between; align-items: center; }
+        .link-btn { color: var(--primary-color); cursor: pointer; font-weight: bold; text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -106,6 +28,9 @@
     
     <div id="loginScreen" class="card card-custom p-4">
         <h2 class="text-center mb-4 fw-bold" style="color: var(--primary-color);">היי, ברוכה הבאה! 👋</h2>
+        
+        <div id="loginError" class="error-msg"></div>
+
         <div class="mb-3">
             <label class="form-label text-muted small">אימייל</label>
             <input type="email" id="loginEmail" class="form-control" dir="ltr">
@@ -114,26 +39,29 @@
             <label class="form-label text-muted small">סיסמה</label>
             <input type="password" id="loginPass" class="form-control" dir="ltr">
         </div>
-        <button onclick="login()" class="btn btn-gradient w-100 mb-3">כניסה</button>
+        <button onclick="login()" class="btn btn-gradient mb-3">כניסה</button>
         <div class="text-center">
             <span class="text-muted">אין לך חשבון?</span>
-            <a href="#" onclick="showRegister()" style="color: var(--primary-color); text-decoration: none; font-weight: bold;">הרשמי עכשיו</a>
+            <span onclick="showRegister()" class="link-btn">הרשמי עכשיו</span>
         </div>
     </div>
 
     <div id="registerScreen" class="card card-custom p-4 hidden">
         <h2 class="text-center mb-4 fw-bold" style="color: var(--secondary-color);">יצירת חשבון חדש ✨</h2>
+        
+        <div id="regError" class="error-msg"></div>
+
         <div class="mb-3">
             <label class="form-label text-muted small">אימייל</label>
             <input type="email" id="regEmail" class="form-control" dir="ltr">
         </div>
         <div class="mb-4">
-            <label class="form-label text-muted small">סיסמה</label>
+            <label class="form-label text-muted small">סיסמה (לפחות 8 תווים, אות ומספר)</label>
             <input type="password" id="regPass" class="form-control" dir="ltr">
         </div>
-        <button onclick="register()" class="btn btn-gradient w-100 mb-3">הרשמה</button>
+        <button onclick="register()" class="btn btn-gradient mb-3">הרשמה</button>
         <div class="text-center">
-            <a href="#" onclick="showLogin()" class="text-muted" style="text-decoration: none;">חזרה לכניסה</a>
+            <span onclick="showLogin()" class="link-btn" style="color: gray;">חזרה לכניסה</span>
         </div>
     </div>
 
@@ -154,9 +82,7 @@
                     <input type="number" id="foodCal" class="form-control mb-0 bg-white" placeholder="קל'" style="max-width: 80px; border-radius: 0; border-right: 1px solid #eee;">
                     <button onclick="addMeal()" class="btn btn-dark px-4"><i class="bi bi-plus-lg"></i></button>
                 </div>
-
-                <div id="mealsList">
-                    </div>
+                <div id="mealsList"></div>
             </div>
         </div>
     </div>
@@ -167,7 +93,17 @@
     const API_URL = '/api';
     let currentUser = null;
 
-    // --- אתחול ---
+    function showError(elementId, msg) {
+        const el = document.getElementById(elementId);
+        el.innerText = msg;
+        el.style.display = 'block';
+    }
+    
+    function clearErrors() {
+        document.getElementById('loginError').style.display = 'none';
+        document.getElementById('regError').style.display = 'none';
+    }
+
     function init() {
         const savedUser = localStorage.getItem('dietUser');
         if (savedUser) {
@@ -178,12 +114,13 @@
         }
     }
 
-    // --- ניווט בין מסכים ---
     function showLogin() {
+        clearErrors();
         hideAll();
         document.getElementById('loginScreen').classList.remove('hidden');
     }
     function showRegister() {
+        clearErrors();
         hideAll();
         document.getElementById('registerScreen').classList.remove('hidden');
     }
@@ -198,11 +135,15 @@
         document.getElementById('appScreen').classList.add('hidden');
     }
 
-    // --- לוגיקת משתמשים (Auth) ---
     async function register() {
+        clearErrors();
         const email = document.getElementById('regEmail').value;
         const pass = document.getElementById('regPass').value;
-        if(!email || !pass) return alert('נא למלא אימייל וסיסמה');
+        
+        if(!email || !pass) {
+            showError('regError', 'נא למלא את כל השדות');
+            return;
+        }
 
         try {
             const res = await fetch(`${API_URL}/auth/register`, {
@@ -210,19 +151,27 @@
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ email, password: pass })
             });
+            
             if (res.ok) {
                 alert('נרשמת בהצלחה! עכשיו אפשר להתחבר.');
                 showLogin();
             } else {
-                alert(await res.text());
+                // מציג את הודעת השגיאה מהשרת (כמו סיסמה חלשה)
+                const txt = await res.text();
+                showError('regError', txt.replace(/"/g, ''));
             }
-        } catch(e) { alert('שגיאה בהרשמה'); }
+        } catch(e) { showError('regError', 'שגיאת תקשורת'); }
     }
 
     async function login() {
+        clearErrors();
         const email = document.getElementById('loginEmail').value;
         const pass = document.getElementById('loginPass').value;
-        if(!email || !pass) return alert('נא למלא את הפרטים');
+
+        if(!email || !pass) {
+            showError('loginError', 'נא למלא אימייל וסיסמה');
+            return;
+        }
 
         try {
             const res = await fetch(`${API_URL}/auth/login`, {
@@ -234,12 +183,14 @@
             if (res.ok) {
                 const data = await res.json();
                 currentUser = { id: data.userId, email: data.email };
-                localStorage.setItem('dietUser', JSON.stringify(currentUser)); // שמירה בדפדפן
+                localStorage.setItem('dietUser', JSON.stringify(currentUser));
                 showApp();
             } else {
-                alert('שם משתמש או סיסמה שגויים');
+                const txt = await res.text();
+                // אם השרת מחזיר JSON של שגיאה, ננסה לפרמט, אחרת טקסט רגיל
+                showError('loginError', txt.includes('משתמש') ? txt : 'שם משתמש או סיסמה שגויים');
             }
-        } catch(e) { alert('שגיאת תקשורת'); }
+        } catch(e) { showError('loginError', 'שגיאת תקשורת עם השרת'); }
     }
 
     function logout() {
@@ -248,37 +199,28 @@
         showLogin();
     }
 
-    // --- לוגיקת אפליקציה (Meals) ---
     async function loadData() {
         if (!currentUser) return;
-        
-        // טעינת סטטיסטיקה
         try {
             const resStats = await fetch(`${API_URL}/stats?userId=${currentUser.id}`);
             const dataStats = await resStats.json();
             document.getElementById('totalCalories').innerText = dataStats.dailyCalories || 0;
         } catch(e) {}
 
-        // טעינת ארוחות
         try {
             const resMeals = await fetch(`${API_URL}/meals?userId=${currentUser.id}`);
             const meals = await resMeals.json();
             const list = document.getElementById('mealsList');
             list.innerHTML = '';
-            
             if (meals.length === 0) {
                 list.innerHTML = '<div class="text-center text-muted py-4">עדיין לא אכלת היום כלום? 🥗</div>';
                 return;
             }
-
             meals.forEach(m => {
                 const time = new Date(m.date).toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit'});
                 list.innerHTML += `
                     <div class="meal-item">
-                        <div>
-                            <div class="fw-bold">${m.name}</div>
-                            <small class="text-muted opacity-75">${time}</small>
-                        </div>
+                        <div><div class="fw-bold">${m.name}</div><small class="text-muted opacity-75">${time}</small></div>
                         <div class="d-flex align-items-center gap-3">
                             <span class="calories-badge">${m.calories} קל'</span>
                             <i class="bi bi-trash text-danger" style="cursor:pointer" onclick="deleteMeal(${m.id})"></i>
@@ -293,20 +235,26 @@
         const cal = document.getElementById('foodCal');
         if(!name.value || !cal.value) return;
 
-        // שליחת הזמן המקומי מהטלפון
         const localTime = (new Date(new Date() - new Date().getTimezoneOffset() * 60000)).toISOString().slice(0, -1);
 
         try {
             await fetch(`${API_URL}/meals`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    name: name.value,
-                    calories: parseInt(cal.value),
-                    date: localTime,
-                    userId: currentUser.id // שולחים את המזהה שלנו!
-                })
+                body: JSON.stringify({ name: name.value, calories: parseInt(cal.value), date: localTime, userId: currentUser.id })
             });
             name.value = ''; cal.value = '';
             loadData();
-        } catch(e) { alert('תקלה בשמ
+        } catch(e) { alert('תקלה בשמירה'); }
+    }
+
+    async function deleteMeal(id) {
+        if(!confirm('למחוק?')) return;
+        await fetch(`${API_URL}/meals/${id}`, { method: 'DELETE' });
+        loadData();
+    }
+
+    init();
+</script>
+</body>
+</html>
