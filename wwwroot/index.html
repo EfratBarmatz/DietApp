@@ -260,7 +260,7 @@
     let currentUser = null;
     let allMeals = []; 
     let itemToDeleteId = null;
-    let lastKnownDate = new Date().getDate(); // משתנה למעקב אחרי התאריך
+    let lastKnownDate = new Date().toDateString(); // שינוי לפורמט מלא של תאריך
 
     function togglePass(inputId, icon) {
         const input = document.getElementById(inputId);
@@ -303,20 +303,17 @@
                 document.getElementById('appScreen').classList.remove('hidden');
                 loadData(); 
                 
-                // התחלת בדיקה אוטומטית לתאריך (שומר לילה)
-                setInterval(checkDateChange, 60000); // בודק כל דקה
+                // שומר הלילה המשופר - רענון דף מלא בחצות
+                setInterval(checkDateChange, 10000); // בודק כל 10 שניות
             }
         } catch(e) { console.error(e); }
     }
 
-    // פונקציית שומר הלילה - בודקת אם עברנו חצות
     function checkDateChange() {
-        const currentDate = new Date().getDate();
+        const currentDate = new Date().toDateString();
         if (currentDate !== lastKnownDate) {
-            // התאריך השתנה! מרענן את הנתונים
-            lastKnownDate = currentDate;
-            console.log("Date changed! Refreshing data...");
-            loadData(); // זה יביא אוטומטית דף נקי כי אין ארוחות להיום
+            console.log("יום חדש! מרענן דף...");
+            location.reload(); // רענון דף מלא שינקה הכל
         }
     }
 
@@ -357,18 +354,13 @@
     async function loadData() {
         if (!currentUser) return;
         try {
-            // הוספתי פרמטר date לשרת (אם הוא תומך) או סינון בצד לקוח
-            // כאן נשמור על הפשטות ונסנן בצד לקוח
             const resMeals = await fetch(`${API_URL}/meals?userId=${currentUser.id}`);
             allMeals = await resMeals.json();
-            
-            // חישוב קלוריות מחדש רק להיום
             renderGrid(allMeals);
         } catch(e) {}
     }
 
     function renderGrid(meals) {
-        // איפוס יומי: סינון רק ארוחות של היום
         const todayStr = new Date().toDateString();
         const todaysMeals = meals.filter(m => new Date(m.date).toDateString() === todayStr);
 
@@ -385,10 +377,7 @@
         todaysMeals.forEach(m => {
             const h = new Date(m.date).getHours();
             let key = 'snack';
-            if(h === 9) key = 'morning';
-            else if(h === 14) key = 'noon';
-            else if(h === 20) key = 'evening';
-            else if (h >= 5 && h < 12) key = 'morning';
+            if (h >= 5 && h < 12) key = 'morning';
             else if (h >= 12 && h < 17) key = 'noon';
             else if (h >= 17 && h < 22) key = 'evening';
             categories[key].cal += m.calories;
@@ -413,84 +402,9 @@
         const titles = { morning: 'ארוחת בוקר', noon: 'ארוחת צהריים', evening: 'ארוחת ערב', snack: 'נשנושים' };
         document.getElementById('viewTitle').innerText = titles[key];
         
-        // גם כאן, לוודא שמציגים רק את היום
         const todayStr = new Date().toDateString();
         const items = allMeals.filter(m => {
             if (new Date(m.date).toDateString() !== todayStr) return false;
-
             const h = new Date(m.date).getHours();
-            if (key === 'morning') return h === 9 || (h >= 5 && h < 12 && h !== 14 && h !== 20);
-            if (key === 'noon') return h === 14 || (h >= 12 && h < 17 && h !== 9 && h !== 20);
-            if (key === 'evening') return h === 20 || (h >= 17 && h < 22 && h !== 9 && h !== 14);
-            return (h < 5 || h >= 22) && h !== 9 && h !== 14 && h !== 20;
-        });
-
-        const list = document.getElementById('itemsList');
-        list.innerHTML = '';
-        if (items.length === 0) list.innerHTML = '<div class="text-muted text-center py-3">ריק</div>';
-        items.forEach(m => {
-            list.innerHTML += `
-                <div class="item-row">
-                    <div>${m.name}</div>
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="badge bg-light text-dark opacity-75">${m.calories}</span>
-                        <i class="bi bi-trash text-danger" style="cursor:pointer" onclick="confirmDelete(${m.id})"></i>
-                    </div>
-                </div>`;
-        });
-        document.getElementById('viewModal').style.display = 'flex';
-    }
-
-    async function addMeal() {
-        const type = document.getElementById('mealType').value;
-        const name = document.getElementById('foodName').value;
-        const cal = document.getElementById('foodCal').value;
-        if(!name || !cal) {
-             showAlert('שגיאה', 'נא למלא את כל הפרטים', false);
-             return;
-        }
-
-        let date = new Date();
-        if (type === 'morning') date.setHours(9, 0, 0);
-        else if (type === 'noon') date.setHours(14, 0, 0);
-        else if (type === 'evening') date.setHours(20, 0, 0);
-        else date.setHours(23, 0, 0);
-
-        const dateStr = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().slice(0, -1);
-
-        try {
-            await fetch(`${API_URL}/meals`, {
-                method: 'POST', headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ name, calories: parseInt(cal), date: dateStr, userId: currentUser.id })
-            });
-            closeModal('addModal');
-            showAlert('מעולה!', 'הארוחה נוספה בהצלחה');
-            loadData();
-        } catch(e) {
-            showAlert('אופס', 'הייתה שגיאה בשמירה', false);
-        }
-    }
-
-    function confirmDelete(id) {
-        itemToDeleteId = id;
-        document.getElementById('confirmModal').style.display = 'flex';
-    }
-
-    async function performDelete() {
-        if(!itemToDeleteId) return;
-        await fetch(`${API_URL}/meals/${itemToDeleteId}`, { method: 'DELETE' });
-        closeModal('confirmModal');
-        closeModal('viewModal');
-        showAlert('נמחק', 'הארוחה הוסרה מהיומן');
-        loadData();
-    }
-    
-    window.login = login;
-    window.register = register;
-    window.showRegister = showRegister;
-    window.showLogin = showLogin;
-    
-    init();
-</script>
-</body>
-</html>
+            if (key === 'morning') return h >= 5 && h < 12;
+            if (key === 'noon') return h >=
