@@ -10,146 +10,78 @@
     
     <style>
         :root {
-            --glass-bg: rgba(255, 255, 255, 0.75);
-            --glass-border: rgba(255, 255, 255, 0.5);
-            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            --glass-bg: rgba(255, 255, 255, 0.85);
             --primary-grad: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             --accent-color: #764ba2;
         }
 
-        /* --- רקע מונפש --- */
         body {
             font-family: 'Rubik', sans-serif;
             background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow-x: hidden;
-            margin: 0;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0; overflow-x: hidden;
         }
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        /* בועות מרחפות ברקע */
-        .circles {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            overflow: hidden; z-index: -1;
-        }
-        .circles li {
-            position: absolute; display: block; list-style: none;
-            width: 20px; height: 20px; background: rgba(255, 255, 255, 0.2);
-            animation: animate 25s linear infinite; bottom: -150px;
-            border-radius: 50%;
-        }
+        /* אנימציית בועות רקע */
+        .circles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: -1; padding: 0; margin: 0; }
+        .circles li { position: absolute; display: block; list-style: none; width: 20px; height: 20px; background: rgba(255, 255, 255, 0.2); animation: animate 25s linear infinite; bottom: -150px; border-radius: 50%; }
         .circles li:nth-child(1) { left: 25%; width: 80px; height: 80px; animation-delay: 0s; }
         .circles li:nth-child(2) { left: 10%; width: 20px; height: 20px; animation-delay: 2s; animation-duration: 12s; }
         .circles li:nth-child(3) { left: 70%; width: 20px; height: 20px; animation-delay: 4s; }
-        .circles li:nth-child(4) { left: 40%; width: 60px; height: 60px; animation-delay: 0s; animation-duration: 18s; }
-        .circles li:nth-child(5) { left: 65%; width: 20px; height: 20px; animation-delay: 0s; }
-        
-        @keyframes animate {
-            0% { transform: translateY(0) rotate(0deg); opacity: 1; border-radius: 0; }
-            100% { transform: translateY(-1000px) rotate(720deg); opacity: 0; border-radius: 50%; }
-        }
+        @keyframes animate { 0% { transform: translateY(0) rotate(0deg); opacity: 1; border-radius: 0; } 100% { transform: translateY(-1000px) rotate(720deg); opacity: 0; border-radius: 50%; } }
 
-        /* --- כרטיס הזכוכית --- */
-        .app-container {
-            width: 100%; max-width: 480px; padding: 20px;
-            position: relative; z-index: 10;
-        }
-
+        /* כרטיס זכוכית */
+        .app-container { width: 100%; max-width: 480px; padding: 20px; position: relative; z-index: 10; }
         .glass-card {
             background: var(--glass-bg);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            border-radius: 24px;
-            border: 1px solid var(--glass-border);
-            box-shadow: var(--glass-shadow);
-            padding: 30px;
-            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border-radius: 24px; border: 1px solid rgba(255,255,255,0.5);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            padding: 30px; animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
-
         @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        /* --- אלמנטים --- */
-        h1, h2 { color: #2d3748; font-weight: 800; }
-        .subtitle { color: #718096; font-size: 0.95rem; margin-bottom: 25px; }
-
+        /* אלמנטים ועיצוב */
+        h1 { color: #2d3748; font-weight: 800; }
         .form-control {
-            background: rgba(255, 255, 255, 0.6);
-            border: 2px solid transparent;
-            border-radius: 15px;
-            padding: 15px;
-            font-size: 1rem;
+            background: rgba(255,255,255,0.6); border: 2px solid transparent; border-radius: 12px; padding: 12px;
             transition: 0.3s;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
         }
-        .form-control:focus {
-            background: white; border-color: #a78bfa;
-            box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.2);
-            transform: translateY(-2px);
-        }
-
+        .form-control:focus { background: white; border-color: #a78bfa; box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.2); }
+        
         .btn-wow {
-            background: var(--primary-grad);
-            border: none; border-radius: 15px;
-            color: white; padding: 15px;
-            font-weight: 700; font-size: 1.1rem;
-            letter-spacing: 0.5px;
-            box-shadow: 0 10px 20px -10px rgba(118, 75, 162, 0.5);
-            transition: 0.3s; width: 100%;
+            background: var(--primary-grad); border: none; border-radius: 12px; color: white; padding: 12px;
+            font-weight: 700; width: 100%; transition: 0.3s; box-shadow: 0 5px 15px rgba(118, 75, 162, 0.4);
         }
-        .btn-wow:hover { transform: translateY(-3px); box-shadow: 0 15px 30px -10px rgba(118, 75, 162, 0.7); }
-        .btn-wow:active { transform: scale(0.98); }
+        .btn-wow:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(118, 75, 162, 0.6); }
 
-        /* --- קלוריות --- */
+        /* --- עיצוב שדה סיסמה עם עין --- */
+        .password-wrapper { position: relative; }
+        .password-toggle {
+            position: absolute; left: 15px; top: 50%; transform: translateY(-50%);
+            cursor: pointer; color: #718096; z-index: 10;
+        }
+        .password-toggle:hover { color: var(--accent-color); }
+
+        /* הודעות שגיאה */
+        .error-msg {
+            background: #fee2e2; color: #b91c1c; padding: 10px; border-radius: 8px;
+            font-size: 0.9rem; margin-bottom: 15px; display: none; border-right: 4px solid #b91c1c;
+        }
+
         .cal-display {
-            background: white;
-            border-radius: 50%;
-            width: 160px; height: 160px;
-            margin: 0 auto 30px;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            position: relative;
+            background: white; border-radius: 50%; width: 150px; height: 150px; margin: 0 auto 20px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
-        .cal-display::before {
-            content: ''; position: absolute;
-            top: -5px; left: -5px; right: -5px; bottom: -5px;
-            border-radius: 50%;
-            background: var(--primary-grad);
-            z-index: -1; opacity: 0.3; filter: blur(10px);
-        }
-        .cal-number { font-size: 3.5rem; font-weight: 800; background: var(--primary-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1; }
+        .cal-number { font-size: 3rem; font-weight: 800; background: var(--primary-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1; }
         
-        /* --- רשימת ארוחות --- */
-        .meal-item {
-            background: white;
-            border-radius: 16px;
-            padding: 15px 20px;
-            margin-bottom: 12px;
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-            transition: 0.3s;
-            border-left: 5px solid transparent;
-            animation: fadeIn 0.4s ease-out;
-        }
-        @keyframes fadeIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
-        
-        .meal-item:hover { transform: translateX(5px); border-left-color: var(--accent-color); }
-        
-        .badge-cal { background: #f3e8ff; color: #7e22ce; padding: 5px 12px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; }
-
-        .error-msg { background: #fee2e2; color: #b91c1c; padding: 12px; border-radius: 12px; font-size: 0.9rem; margin-bottom: 20px; display: none; border-right: 4px solid #b91c1c; }
-        
+        .meal-item { background: white; border-radius: 12px; padding: 10px 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .hidden { display: none !important; }
         .link-text { cursor: pointer; color: #5b21b6; font-weight: 600; text-decoration: underline; }
     </style>
@@ -163,7 +95,7 @@
     <div id="loginScreen" class="glass-card">
         <div class="text-center mb-4">
             <h1>ברוכים הבאים 🍎</h1>
-            <p class="subtitle">המסע שלך לאורח חיים בריא מתחיל כאן</p>
+            <p class="text-muted">התחברו ליומן האישי</p>
         </div>
         
         <div id="loginError" class="error-msg"></div>
@@ -171,20 +103,22 @@
         <div class="mb-3">
             <input type="email" id="loginEmail" class="form-control" placeholder="המייל שלך..." dir="ltr">
         </div>
-        <div class="mb-4">
-            <input type="password" id="loginPass" class="form-control" placeholder="הסיסמה הסודית..." dir="ltr">
+        
+        <div class="mb-4 password-wrapper">
+            <input type="password" id="loginPass" class="form-control" placeholder="סיסמה" dir="ltr">
+            <i class="bi bi-eye password-toggle" onclick="togglePass('loginPass', this)"></i>
         </div>
+
         <button onclick="login()" class="btn-wow mb-3">כניסה למערכת</button>
-        <div class="text-center mt-3">
-            <span class="text-muted">חדש כאן?</span>
-            <span onclick="showRegister()" class="link-text">צור חשבון בחינם</span>
+        <div class="text-center">
+            <span class="text-muted">אין חשבון?</span>
+            <span onclick="showRegister()" class="link-text">הרשמה בחינם</span>
         </div>
     </div>
 
     <div id="registerScreen" class="glass-card hidden">
         <div class="text-center mb-4">
             <h1>יצירת חשבון ✨</h1>
-            <p class="subtitle">הצטרפו לקהילה הבריאה שלנו</p>
         </div>
         
         <div id="regError" class="error-msg"></div>
@@ -192,30 +126,207 @@
         <div class="mb-3">
             <input type="email" id="regEmail" class="form-control" placeholder="אימייל" dir="ltr">
         </div>
-        <div class="mb-4">
-            <input type="password" id="regPass" class="form-control" placeholder="סיסמה (8+ תווים)" dir="ltr">
+        
+        <div class="mb-4 password-wrapper">
+            <input type="password" id="regPass" class="form-control" placeholder="סיסמה (8 תווים, אות ומספר)" dir="ltr">
+            <i class="bi bi-eye password-toggle" onclick="togglePass('regPass', this)"></i>
         </div>
-        <button onclick="register()" class="btn-wow mb-3">הרשמה מהירה</button>
-        <div class="text-center mt-3">
-            <span onclick="showLogin()" class="link-text">כבר רשום? התחבר</span>
+
+        <button onclick="register()" class="btn-wow mb-3">הרשמה</button>
+        <div class="text-center">
+            <span onclick="showLogin()" class="link-text">חזרה לכניסה</span>
         </div>
     </div>
 
-    <div id="appScreen" class="glass-card hidden" style="padding: 20px;">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h5 class="m-0 fw-bold text-muted">היומן שלי</h5>
-            <button onclick="logout()" class="btn btn-sm btn-outline-danger" style="border-radius: 10px;">יציאה</button>
+    <div id="appScreen" class="glass-card hidden">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="m-0 fw-bold">היומן שלי</h5>
+            <button onclick="logout()" class="btn btn-sm btn-outline-danger">יציאה</button>
         </div>
 
         <div class="cal-display">
             <span id="totalCalories" class="cal-number">0</span>
-            <span class="text-muted small">קלוריות היום</span>
+            <span class="text-muted small">קלוריות</span>
         </div>
 
         <div class="d-flex gap-2 mb-4">
-            <input type="text" id="foodName" class="form-control" placeholder="מה אכלת?" style="flex: 2;">
-            <input type="number" id="foodCal" class="form-control" placeholder="קל'" style="flex: 1;">
-            <button onclick="addMeal()" class="btn-wow" style="width: auto; padding: 0 20px;">+</button>
+            <input type="text" id="foodName" class="form-control" placeholder="מה אכלת?">
+            <input type="number" id="foodCal" class="form-control" placeholder="קל'" style="width: 80px;">
+            <button onclick="addMeal()" class="btn-wow" style="width: auto;">+</button>
         </div>
 
-        <div id="mealsList" style="max-height: 400px; overflow-y: auto; padding: 5px;">
+        <div id="mealsList" style="max-height: 300px; overflow-y: auto;"></div>
+    </div>
+
+</div>
+
+<script>
+    const API_URL = '/api';
+    let currentUser = null;
+
+    // פונקציה להצגת/הסתרת סיסמה
+    function togglePass(inputId, icon) {
+        const input = document.getElementById(inputId);
+        if (input.type === "password") {
+            input.type = "text";
+            icon.classList.remove("bi-eye");
+            icon.classList.add("bi-eye-slash");
+        } else {
+            input.type = "password";
+            icon.classList.remove("bi-eye-slash");
+            icon.classList.add("bi-eye");
+        }
+    }
+
+    function showError(elementId, msg) {
+        const el = document.getElementById(elementId);
+        el.innerText = msg;
+        el.style.display = 'block';
+    }
+
+    function clearErrors() {
+        document.getElementById('loginError').style.display = 'none';
+        document.getElementById('regError').style.display = 'none';
+    }
+
+    function init() {
+        try {
+            const savedUser = localStorage.getItem('dietUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showApp();
+            } else {
+                showLogin();
+            }
+        } catch (e) { showLogin(); }
+    }
+
+    function showLogin() { clearErrors(); hideAll(); document.getElementById('loginScreen').classList.remove('hidden'); }
+    function showRegister() { clearErrors(); hideAll(); document.getElementById('registerScreen').classList.remove('hidden'); }
+    function showApp() { hideAll(); document.getElementById('appScreen').classList.remove('hidden'); loadData(); }
+    
+    function hideAll() {
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('registerScreen').classList.add('hidden');
+        document.getElementById('appScreen').classList.add('hidden');
+    }
+
+    async function register() {
+        clearErrors();
+        const email = document.getElementById('regEmail').value;
+        const pass = document.getElementById('regPass').value;
+        
+        if(!email || !pass) {
+            showError('regError', 'נא למלא את כל השדות');
+            return;
+        }
+
+        try {
+            const res = await fetch(`${API_URL}/auth/register`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ email, password: pass })
+            });
+            
+            if (res.ok) {
+                alert('נרשמת בהצלחה! אפשר להתחבר.');
+                showLogin();
+            } else {
+                const txt = await res.text();
+                showError('regError', txt.replace(/"/g, ''));
+            }
+        } catch(e) { showError('regError', 'שגיאת תקשורת'); }
+    }
+
+    async function login() {
+        clearErrors();
+        const email = document.getElementById('loginEmail').value;
+        const pass = document.getElementById('loginPass').value;
+
+        if(!email || !pass) {
+            showError('loginError', 'נא למלא פרטים');
+            return;
+        }
+
+        try {
+            const res = await fetch(`${API_URL}/auth/login`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ email, password: pass })
+            });
+            
+            if (res.ok) {
+                const data = await res.json();
+                currentUser = { id: data.userId, email: data.email };
+                localStorage.setItem('dietUser', JSON.stringify(currentUser));
+                showApp();
+            } else {
+                const txt = await res.text();
+                showError('loginError', txt.includes('error') ? 'שגיאה בהתחברות' : 'שם משתמש או סיסמה שגויים');
+            }
+        } catch(e) { showError('loginError', 'שגיאת תקשורת'); }
+    }
+
+    function logout() {
+        localStorage.removeItem('dietUser');
+        currentUser = null;
+        showLogin();
+    }
+
+    async function loadData() {
+        if (!currentUser) return;
+        try {
+            const resStats = await fetch(`${API_URL}/stats?userId=${currentUser.id}`);
+            const dataStats = await resStats.json();
+            document.getElementById('totalCalories').innerText = dataStats.dailyCalories || 0;
+        } catch(e) {}
+
+        try {
+            const resMeals = await fetch(`${API_URL}/meals?userId=${currentUser.id}`);
+            const meals = await resMeals.json();
+            const list = document.getElementById('mealsList');
+            list.innerHTML = '';
+            meals.forEach(m => {
+                const time = new Date(m.date).toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit'});
+                list.innerHTML += `
+                    <div class="meal-item">
+                        <div><div class="fw-bold">${m.name}</div><small class="text-muted">${time}</small></div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-light text-dark border">${m.calories}</span>
+                            <i class="bi bi-trash text-danger" style="cursor:pointer" onclick="deleteMeal(${m.id})"></i>
+                        </div>
+                    </div>`;
+            });
+        } catch(e) {}
+    }
+
+    async function addMeal() {
+        const name = document.getElementById('foodName');
+        const cal = document.getElementById('foodCal');
+        if(!name.value || !cal.value) return;
+
+        const localTime = (new Date(new Date() - new Date().getTimezoneOffset() * 60000)).toISOString().slice(0, -1);
+
+        try {
+            await fetch(`${API_URL}/meals`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ name: name.value, calories: parseInt(cal.value), date: localTime, userId: currentUser.id })
+            });
+            name.value = ''; cal.value = '';
+            loadData();
+        } catch(e) { alert('תקלה בשמירה'); }
+    }
+
+    async function deleteMeal(id) {
+        if(!confirm('למחוק?')) return;
+        await fetch(`${API_URL}/meals/${id}`, { method: 'DELETE' });
+        loadData();
+    }
+
+    // הפעלה ראשונית
+    init();
+
+</script>
+</body>
+</html>
