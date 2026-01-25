@@ -16,8 +16,6 @@
             --bg-dark: #0f172a;
             --glass-bg: rgba(30, 41, 59, 0.85);
             --glass-border: rgba(255, 255, 255, 0.1);
-            
-            /* חזרנו לפלטה המקורית (בלי התכלת) */
             --color-1: #f472b6; /* ורוד */
             --color-2: #c084fc; /* סגול */
             --color-3: #fbbf24; /* זהב */
@@ -34,7 +32,6 @@
 
         .glow-text {
             font-weight: 900;
-            /* הגרדיאנט חזר להיות 3 צבעים בלבד */
             background: linear-gradient(to right, var(--color-1), var(--color-2), var(--color-3));
             -webkit-background-clip: text; background-clip: text; color: transparent;
             text-shadow: 0 0 30px rgba(244, 114, 182, 0.4);
@@ -60,19 +57,16 @@
         }
         .btn-glow:hover { transform: scale(1.02); filter: brightness(1.1); }
 
-        /* === תיקון מיקום העין לצד ימין === */
         .password-wrapper { position: relative; width: 100%; }
-        
         .password-wrapper input { 
-            padding-right: 45px !important; /* מקום לאייקון בצד ימין */
-            padding-left: 15px !important;  /* ריווח רגיל בצד שמאל */
+            padding-right: 45px !important;
+            padding-left: 15px !important; 
             direction: ltr; 
         }
-        
         .password-toggle { 
             position: absolute; 
-            right: 15px; /* מוצמד לימין */
-            left: auto;  /* מבטל את ההצמדה לשמאל */
+            right: 15px; 
+            left: auto; 
             top: 50%; 
             transform: translateY(-55%); 
             color: #94a3b8; 
@@ -120,11 +114,10 @@
         .card-cal { font-size: 1.4rem; font-weight: 900; color: white; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
         .card-sub { font-size: 0.85rem; color: #94a3b8; }
 
-        /* צבעים לקוביות */
-        .border-morning { border-top: 4px solid var(--color-3); } /* זהב */
-        .border-noon { border-top: 4px solid var(--color-1); }    /* ורוד */
-        .border-evening { border-top: 4px solid var(--color-2); } /* סגול */
-        .border-snack { border-top: 4px solid #4ade80; }          /* ירוק (תואם לתפוח) */
+        .border-morning { border-top: 4px solid var(--color-3); }
+        .border-noon { border-top: 4px solid var(--color-1); }
+        .border-evening { border-top: 4px solid var(--color-2); }
+        .border-snack { border-top: 4px solid #82ca9d; }
 
         .fab {
             position: fixed; bottom: 30px; left: 30px;
@@ -158,17 +151,11 @@
         .link-btn { color: var(--color-2); cursor: pointer; font-weight: 700; text-decoration: underline; }
         .close-btn { float: left; font-size: 1.5rem; cursor: pointer; color: #94a3b8; }
         
-        /* כפתורי אישור וביטול מעוצבים */
         .btn-confirm { background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 12px; font-weight: bold; width: 45%; }
         .btn-cancel { background: rgba(255,255,255,0.1); color: white; border: none; padding: 10px 20px; border-radius: 12px; font-weight: bold; width: 45%; }
         
-        /* כותרות ברורות בחלונית ההוספה */
         .modal-label { 
-            color: #e2e8f0;
-            font-size: 0.95rem; 
-            margin-bottom: 5px; 
-            display: block; 
-            font-weight: 600;
+            color: #e2e8f0; font-size: 0.95rem; margin-bottom: 5px; display: block; font-weight: 600;
         }
     </style>
 </head>
@@ -177,9 +164,7 @@
 <div id="loginScreen" class="auth-container">
     <h1 class="glow-text" style="font-size: 3.5rem; line-height: 1.2;">Fitness<br>Pro</h1>
     <p style="color: #94a3b8; font-size: 1.2rem; margin-bottom: 30px;">האנרגיה שלך מתחילה כאן.</p>
-    
     <div id="loginError" class="error-msg"></div>
-
     <input type="email" id="loginEmail" class="input-glass" placeholder="אימייל" dir="ltr">
     <div class="password-wrapper">
         <input type="password" id="loginPass" class="input-glass" placeholder="הסיסמה הסודית..." dir="ltr">
@@ -215,7 +200,6 @@
     </div>
 
     <div class="meals-grid" id="mealsGrid"></div>
-
     <div class="fab" onclick="openAddModal()"><i class="bi bi-plus-lg"></i></div>
 </div>
 
@@ -225,7 +209,6 @@
             <h4 class="m-0 fw-bold text-white">הוספת ארוחה</h4>
             <i class="bi bi-x-lg close-btn" onclick="closeModal('addModal')"></i>
         </div>
-        
         <label class="modal-label">איזו ארוחה זו?</label>
         <select id="mealType" class="input-glass mb-3" style="padding:10px;">
             <option value="morning" style="color:black">🥐 בוקר</option>
@@ -233,13 +216,10 @@
             <option value="evening" style="color:black">🥗 ערב</option>
             <option value="snack" style="color:black">🥨 נשנוש</option>
         </select>
-
         <label class="modal-label">מה אכלת?</label>
         <input type="text" id="foodName" class="input-glass mb-3" placeholder="למשל: יוגורט">
-
         <label class="modal-label">קלוריות</label>
         <input type="number" id="foodCal" class="input-glass mb-4" placeholder="0">
-
         <button onclick="addMeal()" class="btn-glow">שמירה</button>
     </div>
 </div>
@@ -250,9 +230,7 @@
             <h4 class="m-0 fw-bold text-white" id="viewTitle">ארוחת בוקר</h4>
             <i class="bi bi-x-lg close-btn" onclick="closeModal('viewModal')"></i>
         </div>
-        
-        <div id="itemsList" style="max-height: 300px; overflow-y: auto; color: white;">
-            </div>
+        <div id="itemsList" style="max-height: 300px; overflow-y: auto; color: white;"></div>
     </div>
 </div>
 
@@ -261,7 +239,6 @@
         <i class="bi bi-trash3 text-danger" style="font-size: 3rem; margin-bottom: 10px;"></i>
         <h4 class="text-white fw-bold mb-2">למחוק את הארוחה?</h4>
         <p style="color: #94a3b8; margin-bottom: 20px;">הפעולה היא סופית ולא ניתנת לביטול.</p>
-        
         <div class="d-flex justify-content-between">
             <button onclick="closeModal('confirmModal')" class="btn-cancel">ביטול</button>
             <button onclick="performDelete()" class="btn-confirm">מחיקה</button>
@@ -283,6 +260,7 @@
     let currentUser = null;
     let allMeals = []; 
     let itemToDeleteId = null;
+    let lastKnownDate = new Date().getDate(); // משתנה למעקב אחרי התאריך
 
     function togglePass(inputId, icon) {
         const input = document.getElementById(inputId);
@@ -300,22 +278,15 @@
     function showError(elementId, msg) { const el = document.getElementById(elementId); el.innerText = msg; el.style.display = 'block'; }
     function clearErrors() { document.getElementById('loginError').style.display = 'none'; document.getElementById('regError').style.display = 'none'; }
 
-    // פונקציה להצגת אלרט מעוצב
     function showAlert(title, text, isSuccess = true) {
         document.getElementById('alertTitle').innerText = title;
         document.getElementById('alertText').innerText = text;
-        
         const icon = document.getElementById('alertIcon');
-        if (isSuccess) {
-            icon.className = 'bi bi-check-circle text-success';
-        } else {
-            icon.className = 'bi bi-x-circle text-danger';
-        }
-        
+        if (isSuccess) icon.className = 'bi bi-check-circle text-success';
+        else icon.className = 'bi bi-x-circle text-danger';
         document.getElementById('alertModal').style.display = 'flex';
     }
 
-    // מודאלים
     function openAddModal() { 
         document.getElementById('addModal').style.display = 'flex'; 
         document.getElementById('foodName').value = '';
@@ -323,7 +294,6 @@
     }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-    // אתחול
     function init() {
         try {
             const savedUser = localStorage.getItem('dietUser');
@@ -332,18 +302,30 @@
                 document.getElementById('loginScreen').classList.add('hidden');
                 document.getElementById('appScreen').classList.remove('hidden');
                 loadData(); 
+                
+                // התחלת בדיקה אוטומטית לתאריך (שומר לילה)
+                setInterval(checkDateChange, 60000); // בודק כל דקה
             }
         } catch(e) { console.error(e); }
     }
 
-    // ניווט
+    // פונקציית שומר הלילה - בודקת אם עברנו חצות
+    function checkDateChange() {
+        const currentDate = new Date().getDate();
+        if (currentDate !== lastKnownDate) {
+            // התאריך השתנה! מרענן את הנתונים
+            lastKnownDate = currentDate;
+            console.log("Date changed! Refreshing data...");
+            loadData(); // זה יביא אוטומטית דף נקי כי אין ארוחות להיום
+        }
+    }
+
     function showLogin() { clearErrors(); hideAll(); document.getElementById('loginScreen').classList.remove('hidden'); }
     function showRegister() { clearErrors(); hideAll(); document.getElementById('registerScreen').classList.remove('hidden'); }
     function showApp() { hideAll(); document.getElementById('appScreen').classList.remove('hidden'); loadData(); }
     function hideAll() { document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('registerScreen').classList.add('hidden'); document.getElementById('appScreen').classList.add('hidden'); }
     function logout() { localStorage.removeItem('dietUser'); currentUser = null; showLogin(); }
 
-    // לוגיקה
     async function register() {
         clearErrors();
         const email = document.getElementById('regEmail').value; const pass = document.getElementById('regPass').value;
@@ -375,17 +357,24 @@
     async function loadData() {
         if (!currentUser) return;
         try {
-            const resStats = await fetch(`${API_URL}/stats?userId=${currentUser.id}`);
-            const dataStats = await resStats.json();
-            document.getElementById('totalCalories').innerText = dataStats.dailyCalories || 0;
-
+            // הוספתי פרמטר date לשרת (אם הוא תומך) או סינון בצד לקוח
+            // כאן נשמור על הפשטות ונסנן בצד לקוח
             const resMeals = await fetch(`${API_URL}/meals?userId=${currentUser.id}`);
             allMeals = await resMeals.json();
+            
+            // חישוב קלוריות מחדש רק להיום
             renderGrid(allMeals);
         } catch(e) {}
     }
 
     function renderGrid(meals) {
+        // איפוס יומי: סינון רק ארוחות של היום
+        const todayStr = new Date().toDateString();
+        const todaysMeals = meals.filter(m => new Date(m.date).toDateString() === todayStr);
+
+        const totalCal = todaysMeals.reduce((sum, m) => sum + m.calories, 0);
+        document.getElementById('totalCalories').innerText = totalCal;
+
         const categories = {
             morning: { title: 'בוקר', icon: '🥐', cal: 0, items: [], css: 'border-morning' },
             noon:    { title: 'צהריים', icon: '🍛', cal: 0, items: [], css: 'border-noon' },
@@ -393,7 +382,7 @@
             snack:   { title: 'נשנוש', icon: '🥨', cal: 0, items: [], css: 'border-snack' }
         };
 
-        meals.forEach(m => {
+        todaysMeals.forEach(m => {
             const h = new Date(m.date).getHours();
             let key = 'snack';
             if(h === 9) key = 'morning';
@@ -424,7 +413,11 @@
         const titles = { morning: 'ארוחת בוקר', noon: 'ארוחת צהריים', evening: 'ארוחת ערב', snack: 'נשנושים' };
         document.getElementById('viewTitle').innerText = titles[key];
         
+        // גם כאן, לוודא שמציגים רק את היום
+        const todayStr = new Date().toDateString();
         const items = allMeals.filter(m => {
+            if (new Date(m.date).toDateString() !== todayStr) return false;
+
             const h = new Date(m.date).getHours();
             if (key === 'morning') return h === 9 || (h >= 5 && h < 12 && h !== 14 && h !== 20);
             if (key === 'noon') return h === 14 || (h >= 12 && h < 17 && h !== 9 && h !== 20);
@@ -487,12 +480,11 @@
         if(!itemToDeleteId) return;
         await fetch(`${API_URL}/meals/${itemToDeleteId}`, { method: 'DELETE' });
         closeModal('confirmModal');
-        closeModal('viewModal'); // סוגר גם את הרשימה כדי לרענן
+        closeModal('viewModal');
         showAlert('נמחק', 'הארוחה הוסרה מהיומן');
         loadData();
     }
     
-    // מניעת שגיאות כפתורים
     window.login = login;
     window.register = register;
     window.showRegister = showRegister;
