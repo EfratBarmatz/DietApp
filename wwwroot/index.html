@@ -306,7 +306,16 @@
     function showRegister() { hideAll(); document.getElementById('registerScreen').classList.remove('hidden'); }
     function hideAll() { document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('registerScreen').classList.add('hidden'); document.getElementById('appScreen').classList.add('hidden'); }
     function logout() { localStorage.removeItem('dietUser'); location.reload(); }
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    
+    // ניקוי טופס בסגירה ידנית
+    function closeModal(id) { 
+        document.getElementById(id).style.display = 'none'; 
+        if(id === 'addModal') {
+            document.getElementById('foodName').value = '';
+            document.getElementById('foodCal').value = '';
+        }
+    }
+    
     function openAddModal() { document.getElementById('addModal').style.display = 'flex'; }
 
     async function loadData() {
@@ -331,9 +340,15 @@
         todaysMeals.forEach(m => {
             const h = new Date(m.date).getHours();
             let key = 'snack';
-            if (h === 9) key = 'morning'; else if (h === 14) key = 'noon'; else if (h === 20) key = 'evening';
-            categories[key].cal += m.calories;
-            categories[key].items.push(m);
+            // התאמה ללוגיקה של השרת כדי שיציג בקופסה הנכונה
+            if (h === 9) key = 'morning'; 
+            else if (h === 14) key = 'noon'; 
+            else if (h === 20) key = 'evening';
+            
+            if(categories[key]) {
+                categories[key].cal += m.calories;
+                categories[key].items.push(m);
+            }
         });
 
         const grid = document.getElementById('mealsGrid');
@@ -381,22 +396,35 @@
 
     async function addMeal() {
         const type = document.getElementById('mealType').value;
-        const name = document.getElementById('foodName').value;
-        const cal = document.getElementById('foodCal').value;
-        if(!name || !cal) return;
+        const nameInput = document.getElementById('foodName');
+        const calInput = document.getElementById('foodCal');
+        
+        if(!nameInput.value || !calInput.value) return;
 
-        let d = new Date();
+        let d = new Date(); // שעה נוכחית אמיתית
+        
+        // הגדרת השעה לפי הקטגוריה כדי שהשרת ידע לשייך נכון
         if(type === 'morning') d.setHours(9,0,0);
         else if(type === 'noon') d.setHours(14,0,0);
         else if(type === 'evening') d.setHours(20,0,0);
-        else d.setHours(23,0,0);
+        else d.setHours(23,0,0); // נשנוש
 
         const dateStr = new Date(d.getTime() - (d.getTimezoneOffset() * 60000)).toISOString().slice(0, -1);
 
         await fetch(`${API_URL}/meals`, {
             method: 'POST', headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ name, calories: parseInt(cal), date: dateStr, userId: currentUser.id })
+            body: JSON.stringify({ 
+                name: nameInput.value, 
+                calories: parseInt(calInput.value), 
+                date: dateStr, 
+                userId: currentUser.id 
+            })
         });
+
+        // ניקוי הטופס לאחר הצלחה
+        nameInput.value = '';
+        calInput.value = '';
+        
         closeModal('addModal');
         loadData();
     }
