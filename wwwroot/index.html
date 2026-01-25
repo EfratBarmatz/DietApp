@@ -3,313 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>My Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <title>Neon Diet App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     
     <style>
         :root {
-            --primary: #4F46E5;
-            --primary-light: #818cf8;
-            --bg-app: #F9FAFB;
-            --text-dark: #111827;
-            --text-gray: #6B7280;
+            --bg-dark: #0f172a; /* כחול לילה עמוק */
+            --bg-card: #1e293b;
+            --primary: #22c55e; /* ירוק ניאון */
+            --primary-glow: rgba(34, 197, 94, 0.5);
+            --accent: #8b5cf6; /* סגול ניאון */
+            --text-light: #f8fafc;
+            --text-gray: #94a3b8;
         }
 
         body {
-            font-family: 'Heebo', sans-serif;
-            background-color: var(--bg-app);
-            color: var(--text-dark);
+            font-family: 'Assistant', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
             margin: 0; min-height: 100vh;
             display: flex; flex-direction: column;
         }
 
-        /* --- מסכי כניסה/הרשמה --- */
+        /* --- כניסה והרשמה --- */
         .auth-container {
             flex: 1; display: flex; flex-direction: column; justify-content: center;
-            padding: 30px; max-width: 450px; margin: 0 auto; width: 100%;
+            padding: 30px; max-width: 400px; margin: 0 auto; width: 100%;
         }
-        .auth-title { font-weight: 900; font-size: 2.5rem; color: var(--text-dark); margin-bottom: 10px; }
-        .auth-subtitle { font-size: 1.1rem; color: var(--text-gray); margin-bottom: 40px; }
-
-        .form-floating > .form-control { border-radius: 16px; border: 2px solid #E5E7EB; padding-right: 20px; height: calc(3.5rem + 2px); line-height: 1.25; }
-        .form-floating > .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); }
-        .form-floating > label { padding-right: 20px; }
         
-        .btn-main {
-            background: var(--primary); color: white; border: none; border-radius: 16px;
-            padding: 16px; font-weight: 700; font-size: 1.1rem; width: 100%; transition: 0.2s;
-            box-shadow: 0 10px 20px -10px rgba(79, 70, 229, 0.5);
-        }
-        .btn-main:hover { background-color: #4338CA; transform: translateY(-2px); }
+        h1 { font-weight: 800; font-size: 2.8rem; margin-bottom: 5px; background: linear-gradient(to right, var(--primary), #4ade80); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .subtitle { color: var(--text-gray); font-size: 1.1rem; margin-bottom: 40px; }
 
-        .password-wrapper { position: relative; }
-        .password-wrapper input { padding-left: 50px !important; }
-        .password-toggle {
-            position: absolute; left: 20px; top: 50%; transform: translateY(-50%);
-            cursor: pointer; color: var(--text-gray); font-size: 1.2rem; z-index: 5;
+        /* שדות קלט כהים */
+        .input-dark {
+            background: var(--bg-card);
+            border: 1px solid #334155;
+            color: white;
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 1rem;
+            width: 100%;
+            margin-bottom: 15px;
+            transition: 0.3s;
         }
+        .input-dark:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+        .input-dark::placeholder { color: #475569; }
+
+        /* כפתור ניאון */
+        .btn-neon {
+            background: var(--primary);
+            color: #000;
+            font-weight: 800;
+            padding: 15px;
+            border-radius: 12px;
+            border: none;
+            width: 100%;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 0 20px var(--primary-glow);
+            transition: 0.2s;
+        }
+        .btn-neon:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px var(--primary-glow);
+            background: #4ade80;
+        }
+
+        .link-text { color: var(--accent); cursor: pointer; text-decoration: underline; font-weight: bold; }
 
         /* --- דשבורד --- */
         .app-header {
+            padding: 20px 25px;
             display: flex; justify-content: space-between; align-items: center;
-            padding: 20px 25px; background: white;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(10px);
+            position: sticky; top: 0; z-index: 10;
+            border-bottom: 1px solid #334155;
         }
-        .greeting { font-size: 1.5rem; font-weight: 800; }
         
-        /* כפתור יציאה לבן ונקי */
-        .btn-logout-white {
-            background: white; border: 1px solid #E5E7EB; color: #4B5563;
-            border-radius: 50px; padding: 8px 20px; font-weight: 600;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.2s;
+        .btn-logout {
+            background: transparent; border: 1px solid #ef4444; color: #ef4444;
+            border-radius: 8px; padding: 5px 15px; font-weight: bold; font-size: 0.9rem;
+            transition: 0.3s;
         }
-        .btn-logout-white:hover {
-            color: #ef4444; border-color: #fee2e2; background: #fef2f2;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        .btn-logout:hover { background: #ef4444; color: white; box-shadow: 0 0 15px rgba(239, 68, 68, 0.5); }
+
+        /* מד קלוריות זוהר */
+        .progress-container {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 40px 0;
+            position: relative;
         }
-
-        .progress-ring-container { display: flex; justify-content: center; margin: 30px 0; position: relative; }
-        .progress-ring-circle { transition: stroke-dashoffset 0.5s ease-in-out; transform: rotate(-90deg); transform-origin: 50% 50%; }
-        .calories-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
-        .cal-count { font-size: 3.5rem; font-weight: 900; line-height: 1; color: var(--primary); }
-
-        .add-bar {
-            background: white; padding: 20px; border-radius: 24px 24px 0 0;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.03); margin-top: auto;
+        .glow-circle {
+            width: 200px; height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(34,197,94,0.2) 0%, rgba(15,23,42,0) 70%);
+            position: absolute; z-index: 0;
         }
-        .input-custom { border: none; background: #F3F4F6; border-radius: 12px; padding: 12px 15px; font-weight: 500; }
-        .btn-add { border-radius: 12px; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; padding: 0; }
+        
+        .cal-number { font-size: 4rem; font-weight: 900; line-height: 1; color: white; z-index: 1; text-shadow: 0 0 20px rgba(255,255,255,0.3); }
+        .cal-label { color: var(--primary); font-weight: bold; letter-spacing: 1px; margin-top: 5px; z-index: 1; text-transform: uppercase; }
 
-        .meals-container { padding: 0 25px; flex: 1; overflow-y: auto; }
+        /* כרטיסי ארוחות */
+        .meals-list { padding: 0 20px 100px 20px; } /* ריווח למטה בשביל הבר הוספה */
+        
         .meal-card {
-            background: white; border-radius: 18px; padding: 15px; margin-bottom: 15px;
-            display: flex; align-items: center; justify-content: space-between;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.04); transition: 0.2s; border: 1px solid transparent;
+            background: var(--bg-card);
+            border-left: 4px solid var(--primary);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            animation: fadeIn 0.3s ease-out;
         }
-        .meal-card:hover { border-color: var(--primary-light); transform: translateY(-2px); }
-        .meal-icon {
-            width: 45px; height: 45px; border-radius: 12px; background: #EEF2FF; color: var(--primary);
-            display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-left: 15px;
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .hidden { display: none !important; }
-        .link-text { cursor: pointer; color: var(--primary); font-weight: 700; text-decoration: none; }
-        .error-msg { background: #FEE2E2; color: #991B1B; padding: 12px; border-radius: 12px; margin-bottom: 20px; font-weight: 500; display: none; }
-    </style>
-</head>
-<body>
-
-<div id="loginScreen" class="auth-container">
-    <div>
-        <h1 class="auth-title">ברוכים הבאים 🍎</h1>
-        <p class="auth-subtitle">המסע שלך לאורח חיים בריא מתחיל כאן</p>
-    </div>
-    
-    <div id="loginError" class="error-msg"></div>
-
-    <div class="form-floating mb-3">
-        <input type="email" id="loginEmail" class="form-control" placeholder="name@example.com" dir="ltr">
-        <label>כתובת אימייל</label>
-    </div>
-    
-    <div class="form-floating mb-4 password-wrapper">
-        <input type="password" id="loginPass" class="form-control" placeholder="Password" dir="ltr">
-        <label>הסיסמה הסודית...</label>
-        <i class="bi bi-eye password-toggle" onclick="togglePass('loginPass', this)"></i>
-    </div>
-
-    <button onclick="login()" class="btn-main mb-4">כניסה למערכת</button>
-    
-    <div class="text-center">
-        <span class="text-muted">חדש כאן?</span>
-        <span onclick="showRegister()" class="link-text ms-2">צור חשבון בחינם</span>
-    </div>
-</div>
-
-<div id="registerScreen" class="auth-container hidden">
-    <div>
-        <h1 class="auth-title">יצירת חשבון ✨</h1>
-        <p class="auth-subtitle">הצטרפו לקהילה הבריאה שלנו</p>
-    </div>
-    
-    <div id="regError" class="error-msg"></div>
-
-    <div class="form-floating mb-3">
-        <input type="email" id="regEmail" class="form-control" placeholder="name@example.com" dir="ltr">
-        <label>כתובת אימייל</label>
-    </div>
-    
-    <div class="form-floating mb-4 password-wrapper">
-        <input type="password" id="regPass" class="form-control" placeholder="Password" dir="ltr">
-        <label>סיסמה (8+ תווים, אות ומספר)</label>
-        <i class="bi bi-eye password-toggle" onclick="togglePass('regPass', this)"></i>
-    </div>
-
-    <button onclick="register()" class="btn-main mb-4">הרשמה והתחלת מסע</button>
-    
-    <div class="text-center">
-        <span class="text-muted">כבר יש לך חשבון?</span>
-        <span onclick="showLogin()" class="link-text ms-2">התחבר כאן</span>
-    </div>
-</div>
-
-<div id="appScreen" class="hidden" style="min-height: 100vh; display: flex; flex-direction: column;">
-    <div class="app-header">
-        <div>
-            <div class="text-muted small">היום, <span id="currentDate"></span></div>
-            <div class="greeting">היי, <span id="userNameSpan">אלוף</span>!</div>
-        </div>
-        <button onclick="logout()" class="btn btn-logout-white">
-            <i class="bi bi-box-arrow-right me-1"></i> יציאה
-        </button>
-    </div>
-
-    <div class="progress-ring-container">
-        <svg class="progress-ring" width="220" height="220">
-            <circle class="progress-ring-circle-bg" stroke="#E5E7EB" stroke-width="15" fill="transparent" r="90" cx="110" cy="110"/>
-            <circle class="progress-ring-circle" id="calProgress" stroke="var(--primary)" stroke-width="15" stroke-linecap="round" fill="transparent" r="90" cx="110" cy="110"
-                    stroke-dasharray="565.48" stroke-dashoffset="565.48"/>
-        </svg>
-        <div class="calories-overlay">
-            <div class="cal-count" id="totalCalories">0</div>
-            <div class="text-muted">קלוריות היום</div>
-        </div>
-    </div>
-
-    <div class="meals-container" id="mealsList"></div>
-
-    <div class="add-bar">
-        <div class="d-flex gap-2">
-            <input type="text" id="foodName" class="input-custom flex-grow-1" placeholder="מה אכלת עכשיו?">
-            <input type="number" id="foodCal" class="input-custom" placeholder="קל'" style="width: 80px;">
-            <button onclick="addMeal()" class="btn btn-main btn-add"><i class="bi bi-plus-lg fs-4"></i></button>
-        </div>
-    </div>
-</div>
-
-<script>
-    const API_URL = '/api';
-    let currentUser = null;
-
-    document.getElementById('currentDate').innerText = new Date().toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long' });
-
-    function togglePass(inputId, icon) {
-        const input = document.getElementById(inputId);
-        input.type = input.type === "password" ? "text" : "password";
-        icon.classList.toggle("bi-eye");
-        icon.classList.toggle("bi-eye-slash");
-    }
-
-    function showError(elementId, msg) { const el = document.getElementById(elementId); el.innerText = msg; el.style.display = 'block'; }
-    function clearErrors() { document.getElementById('loginError').style.display = 'none'; document.getElementById('regError').style.display = 'none'; }
-
-    function init() {
-        const savedUser = localStorage.getItem('dietUser');
-        if (savedUser) { currentUser = JSON.parse(savedUser); showApp(); } else { showLogin(); }
-    }
-
-    function showLogin() { clearErrors(); hideAll(); document.getElementById('loginScreen').classList.remove('hidden'); }
-    function showRegister() { clearErrors(); hideAll(); document.getElementById('registerScreen').classList.remove('hidden'); }
-    function showApp() { hideAll(); document.getElementById('appScreen').classList.remove('hidden'); loadData(); }
-    function hideAll() { document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('registerScreen').classList.add('hidden'); document.getElementById('appScreen').classList.add('hidden'); }
-
-    async function register() {
-        clearErrors();
-        const email = document.getElementById('regEmail').value; const pass = document.getElementById('regPass').value;
-        if(!email || !pass) return showError('regError', 'נא למלא את כל השדות');
-        try {
-            const res = await fetch(`${API_URL}/auth/register`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ email, password: pass }) });
-            if (res.ok) { alert('נרשמת בהצלחה!'); showLogin(); } else { showError('regError', await res.text()); }
-        } catch(e) { showError('regError', 'שגיאת תקשורת'); }
-    }
-
-    async function login() {
-        clearErrors();
-        const email = document.getElementById('loginEmail').value; const pass = document.getElementById('loginPass').value;
-        if(!email || !pass) return showError('loginError', 'נא למלא פרטים');
-        try {
-            const res = await fetch(`${API_URL}/auth/login`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ email, password: pass }) });
-            if (res.ok) {
-                const data = await res.json();
-                currentUser = { id: data.userId, email: data.email };
-                localStorage.setItem('dietUser', JSON.stringify(currentUser));
-                showApp();
-            } else { showError('loginError', 'פרטים שגויים'); }
-        } catch(e) { showError('loginError', 'שגיאת תקשורת'); }
-    }
-
-    function logout() { localStorage.removeItem('dietUser'); currentUser = null; showLogin(); }
-
-    function getMealIcon(dateStr) {
-        const hour = new Date(dateStr).getHours();
-        if (hour >= 5 && hour < 12) return 'bi-sunrise';
-        if (hour >= 12 && hour < 18) return 'bi-sun';
-        if (hour >= 18 && hour < 22) return 'bi-sunset';
-        return 'bi-moon-stars';
-    }
-
-    async function loadData() {
-        if (!currentUser) return;
-        document.getElementById('userNameSpan').innerText = currentUser.email.split('@')[0];
-
-        try {
-            const resStats = await fetch(`${API_URL}/stats?userId=${currentUser.id}`);
-            const dataStats = await resStats.json();
-            const total = dataStats.dailyCalories || 0;
-            document.getElementById('totalCalories').innerText = total;
-            
-            const target = 2000; 
-            const percent = Math.min((total / target) * 100, 100);
-            const circle = document.getElementById('calProgress');
-            const circumference = 565.48;
-            const offset = circumference - (percent / 100) * circumference;
-            circle.style.strokeDashoffset = offset;
-        } catch(e) {}
-
-        try {
-            const resMeals = await fetch(`${API_URL}/meals?userId=${currentUser.id}`);
-            const meals = await resMeals.json();
-            const list = document.getElementById('mealsList');
-            list.innerHTML = '';
-            meals.forEach(m => {
-                const time = new Date(m.date).toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit'});
-                const iconClass = getMealIcon(m.date);
-                list.innerHTML += `
-                    <div class="meal-card">
-                        <div class="d-flex align-items-center">
-                            <div class="meal-icon"><i class="bi ${iconClass}"></i></div>
-                            <div>
-                                <div class="fw-bold" style="font-size: 1.1rem;">${m.name}</div>
-                                <small class="text-muted">${time}</small>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center gap-3">
-                            <span class="fw-bold text-primary" style="font-size: 1.2rem;">${m.calories} <small style="font-size:0.8rem">קל'</small></span>
-                            <i class="bi bi-trash3 text-danger opacity-50 hover-danger" style="cursor:pointer; font-size: 1.2rem;" onclick="deleteMeal(${m.id})"></i>
-                        </div>
-                    </div>`;
-            });
-        } catch(e) {}
-    }
-
-    async function addMeal() {
-        const name = document.getElementById('foodName');
-        const cal = document.getElementById('foodCal');
-        if(!name.value || !cal.value) return;
-        const localTime = (new Date(new Date() - new Date().getTimezoneOffset() * 60000)).toISOString().slice(0, -1);
-        try {
-            await fetch(`${API_URL}/meals`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ name: name.value, calories: parseInt(cal.value), date: localTime, userId: currentUser.id }) });
-            name.value = ''; cal.value = ''; loadData();
-        } catch(e) {}
-    }
-
-    async function deleteMeal(id) {
-        if(!confirm('למחוק את הארוחה?')) return;
-        await fetch(`${API_URL}/meals/${id}`, { method: 'DELETE' });
-        loadData();
-    }
-    init();
-</script>
-</body>
-</html>
+        .meal-name { font-weight: bold; font-size: 1.1rem; }
+        .meal-time { color: var(--text-gray); font-size: 0.85rem; }
+        .meal-cal { background: rgba(34, 197, 94, 0.2); color: var(--primary); padding: 5px 10px; border-radius: 8px; font-weight: bold;
