@@ -16,9 +16,9 @@
             --bg-dark: #0f172a;
             --glass-bg: rgba(30, 41, 59, 0.85);
             --glass-border: rgba(255, 255, 255, 0.1);
-            --color-1: #f472b6; /* ורוד */
-            --color-2: #c084fc; /* סגול */
-            --color-3: #fbbf24; /* זהב */
+            --color-1: #f472b6;
+            --color-2: #c084fc;
+            --color-3: #fbbf24;
         }
 
         body {
@@ -48,31 +48,16 @@
             border-radius: 15px; padding: 15px; font-size: 1.1rem; width: 100%;
             margin-bottom: 15px; backdrop-filter: blur(10px); transition: 0.3s;
         }
-        .input-glass:focus { outline: none; border-color: var(--color-1); box-shadow: 0 0 15px rgba(244, 114, 182, 0.3); }
 
         .btn-glow {
             background: linear-gradient(135deg, var(--color-1), var(--color-2));
             color: white; font-weight: 800; padding: 15px; border-radius: 15px; border: none; width: 100%; font-size: 1.2rem;
             box-shadow: 0 5px 20px rgba(192, 132, 252, 0.4); margin-top: 10px; cursor: pointer; transition: 0.2s;
         }
-        .btn-glow:hover { transform: scale(1.02); filter: brightness(1.1); }
 
         .password-wrapper { position: relative; width: 100%; }
-        .password-wrapper input { 
-            padding-right: 45px !important;
-            padding-left: 15px !important; 
-            direction: ltr; 
-        }
-        .password-toggle { 
-            position: absolute; 
-            right: 15px; 
-            left: auto; 
-            top: 50%; 
-            transform: translateY(-55%); 
-            color: #94a3b8; 
-            cursor: pointer; 
-            z-index: 10; 
-        }
+        .password-wrapper input { padding-right: 45px !important; direction: ltr; }
+        .password-toggle { position: absolute; right: 15px; top: 50%; transform: translateY(-55%); color: #94a3b8; cursor: pointer; z-index: 10; }
 
         .app-header {
             padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;
@@ -85,34 +70,16 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             padding: 40px 0; position: relative;
         }
-        .glow-bg {
-            position: absolute; width: 220px; height: 220px; border-radius: 50%;
-            background: radial-gradient(circle, rgba(192, 132, 252, 0.2) 0%, rgba(15,23,42,0) 70%);
-            animation: pulse 4s infinite ease-in-out; z-index: 0;
-        }
-        @keyframes pulse { 0% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 0.8; } 100% { transform: scale(1); opacity: 0.5; } }
         
-        .cal-number { 
-            font-size: 4.5rem; font-weight: 900; line-height: 1; z-index: 1;
-            background: linear-gradient(to bottom, #ffffff, #e2e8f0);
-            -webkit-background-clip: text; background-clip: text; color: transparent;
-        }
-        .cal-label { color: var(--color-2); font-weight: bold; letter-spacing: 2px; margin-top: 5px; z-index: 1; text-transform: uppercase; font-size: 0.9rem; }
+        .cal-number { font-size: 4.5rem; font-weight: 900; line-height: 1; z-index: 1; color: white; }
+        .cal-label { color: var(--color-2); font-weight: bold; letter-spacing: 2px; margin-top: 5px; font-size: 0.9rem; }
 
         .meals-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px 100px; }
         
         .meal-card {
             background: var(--glass-bg); border: 1px solid var(--glass-border);
-            border-radius: 20px; padding: 20px; backdrop-filter: blur(10px);
-            display: flex; flex-direction: column; align-items: center; text-align: center;
-            transition: 0.2s; cursor: pointer;
+            border-radius: 20px; padding: 20px; text-align: center; cursor: pointer;
         }
-        .meal-card:active { transform: scale(0.95); background: rgba(255,255,255,0.1); }
-
-        .card-icon { font-size: 2rem; margin-bottom: 10px; }
-        .card-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 5px; color: #e2e8f0; }
-        .card-cal { font-size: 1.4rem; font-weight: 900; color: white; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
-        .card-sub { font-size: 0.85rem; color: #94a3b8; }
 
         .border-morning { border-top: 4px solid var(--color-3); }
         .border-noon { border-top: 4px solid var(--color-1); }
@@ -120,291 +87,213 @@
         .border-snack { border-top: 4px solid #82ca9d; }
 
         .fab {
-            position: fixed; bottom: 30px; left: 30px;
-            width: 65px; height: 65px; border-radius: 50%;
+            position: fixed; bottom: 30px; left: 30px; width: 65px; height: 65px; border-radius: 50%;
             background: linear-gradient(135deg, var(--color-1), var(--color-2));
             color: white; display: flex; align-items: center; justify-content: center;
-            font-size: 2rem; box-shadow: 0 0 25px rgba(192, 132, 252, 0.5); 
-            cursor: pointer; z-index: 100; transition: 0.3s;
+            font-size: 2rem; z-index: 100;
         }
-        .fab:hover { transform: scale(1.1) rotate(90deg); }
 
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.8); z-index: 200; display: none;
             align-items: center; justify-content: center; backdrop-filter: blur(8px);
         }
-        .modal-box {
-            background: #1e293b; width: 90%; max-width: 400px; padding: 25px;
-            border-radius: 24px; box-shadow: 0 0 40px rgba(0,0,0,0.5); border: 1px solid var(--glass-border);
-            animation: slideUp 0.3s ease;
-        }
-        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        .item-row {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-
+        .modal-box { background: #1e293b; width: 90%; max-width: 400px; padding: 25px; border-radius: 24px; border: 1px solid var(--glass-border); }
+        .item-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .hidden { display: none !important; }
-        .error-msg { background: rgba(239, 68, 68, 0.2); color: #fca5a5; padding: 10px; border-radius: 8px; border: 1px solid #ef4444; margin-bottom: 15px; display: none; }
-        .link-btn { color: var(--color-2); cursor: pointer; font-weight: 700; text-decoration: underline; }
-        .close-btn { float: left; font-size: 1.5rem; cursor: pointer; color: #94a3b8; }
-        
-        .btn-confirm { background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 12px; font-weight: bold; width: 45%; }
-        .btn-cancel { background: rgba(255,255,255,0.1); color: white; border: none; padding: 10px 20px; border-radius: 12px; font-weight: bold; width: 45%; }
-        
-        .modal-label { 
-            color: #e2e8f0; font-size: 0.95rem; margin-bottom: 5px; display: block; font-weight: 600;
-        }
+        .error-msg { background: rgba(239, 68, 68, 0.2); color: #fca5a5; padding: 10px; border-radius: 8px; margin-bottom: 15px; display: none; }
+        .modal-label { color: #e2e8f0; font-size: 0.95rem; margin-bottom: 5px; display: block; font-weight: 600; }
     </style>
 </head>
 <body>
 
 <div id="loginScreen" class="auth-container">
-    <h1 class="glow-text" style="font-size: 3.5rem; line-height: 1.2;">Fitness<br>Pro</h1>
-    <p style="color: #94a3b8; font-size: 1.2rem; margin-bottom: 30px;">האנרגיה שלך מתחילה כאן.</p>
+    <h1 class="glow-text" style="font-size: 3.5rem;">Fitness<br>Pro</h1>
     <div id="loginError" class="error-msg"></div>
     <input type="email" id="loginEmail" class="input-glass" placeholder="אימייל" dir="ltr">
     <div class="password-wrapper">
-        <input type="password" id="loginPass" class="input-glass" placeholder="הסיסמה הסודית..." dir="ltr">
+        <input type="password" id="loginPass" class="input-glass" placeholder="הסיסמה..." dir="ltr">
         <i class="bi bi-eye password-toggle" onclick="togglePass('loginPass', this)"></i>
     </div>
-    <button onclick="login()" class="btn-glow">כניסה למערכת</button>
-    <div class="text-center mt-3"><span style="color: #94a3b8;">חדשה?</span> <span onclick="showRegister()" class="link-btn">הרשמה</span></div>
+    <button onclick="login()" class="btn-glow">כניסה</button>
+    <div class="text-center mt-3"><span onclick="showRegister()" style="color:var(--color-2); cursor:pointer;">הרשמה</span></div>
 </div>
 
 <div id="registerScreen" class="auth-container hidden">
     <h1 class="glow-text">הצטרפי</h1>
-    <p style="color: #94a3b8; margin-bottom: 30px;">התחילי את השינוי היום.</p>
     <div id="regError" class="error-msg"></div>
     <input type="email" id="regEmail" class="input-glass" placeholder="אימייל" dir="ltr">
     <div class="password-wrapper">
-        <input type="password" id="regPass" class="input-glass" placeholder="סיסמה (8+ תווים)" dir="ltr">
+        <input type="password" id="regPass" class="input-glass" placeholder="סיסמה" dir="ltr">
         <i class="bi bi-eye password-toggle" onclick="togglePass('regPass', this)"></i>
     </div>
-    <button onclick="register()" class="btn-glow">יצירת חשבון</button>
-    <div class="text-center mt-3"><span onclick="showLogin()" class="link-btn">חזרה לכניסה</span></div>
+    <button onclick="register()" class="btn-glow">צור חשבון</button>
+    <div class="text-center mt-3"><span onclick="showLogin()" style="color:var(--color-2); cursor:pointer;">חזרה לכניסה</span></div>
 </div>
 
 <div id="appScreen" class="hidden">
     <div class="app-header">
-        <div class="glow-text" style="font-size: 1.5rem; margin:0; text-shadow:none;">My Tracker</div>
+        <div class="glow-text" style="font-size: 1.5rem; margin:0;">My Tracker</div>
         <button onclick="logout()" class="btn-logout">יציאה</button>
     </div>
-
     <div class="progress-container">
-        <div class="glow-bg"></div>
         <div class="cal-number" id="totalCalories">0</div>
         <div class="cal-label">קלוריות היום</div>
     </div>
-
     <div class="meals-grid" id="mealsGrid"></div>
     <div class="fab" onclick="openAddModal()"><i class="bi bi-plus-lg"></i></div>
 </div>
 
 <div class="modal-overlay" id="addModal">
     <div class="modal-box">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="m-0 fw-bold text-white">הוספת ארוחה</h4>
-            <i class="bi bi-x-lg close-btn" onclick="closeModal('addModal')"></i>
-        </div>
-        <label class="modal-label">איזו ארוחה זו?</label>
-        <select id="mealType" class="input-glass mb-3" style="padding:10px;">
-            <option value="morning" style="color:black">🥐 בוקר</option>
-            <option value="noon" style="color:black">🍛 צהריים</option>
-            <option value="evening" style="color:black">🥗 ערב</option>
-            <option value="snack" style="color:black">🥨 נשנוש</option>
+        <h4 class="text-white mb-3">הוספת ארוחה</h4>
+        <label class="modal-label">ארוחה</label>
+        <select id="mealType" class="input-glass">
+            <option value="morning">🥐 בוקר</option>
+            <option value="noon">🍛 צהריים</option>
+            <option value="evening">🥗 ערב</option>
+            <option value="snack">🥨 נשנוש</option>
         </select>
         <label class="modal-label">מה אכלת?</label>
-        <input type="text" id="foodName" class="input-glass mb-3" placeholder="למשל: יוגורט">
+        <input type="text" id="foodName" class="input-glass" placeholder="למשל: תפוח">
         <label class="modal-label">קלוריות</label>
-        <input type="number" id="foodCal" class="input-glass mb-4" placeholder="0">
+        <input type="number" id="foodCal" class="input-glass">
         <button onclick="addMeal()" class="btn-glow">שמירה</button>
+        <button onclick="closeModal('addModal')" class="btn btn-link text-white w-100">ביטול</button>
     </div>
 </div>
 
 <div class="modal-overlay" id="viewModal">
     <div class="modal-box">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="m-0 fw-bold text-white" id="viewTitle">ארוחת בוקר</h4>
-            <i class="bi bi-x-lg close-btn" onclick="closeModal('viewModal')"></i>
+        <div class="d-flex justify-content-between text-white mb-3">
+            <h4 id="viewTitle"></h4>
+            <i class="bi bi-x-lg" onclick="closeModal('viewModal')" style="cursor:pointer"></i>
         </div>
-        <div id="itemsList" style="max-height: 300px; overflow-y: auto; color: white;"></div>
-    </div>
-</div>
-
-<div class="modal-overlay" id="confirmModal">
-    <div class="modal-box text-center">
-        <i class="bi bi-trash3 text-danger" style="font-size: 3rem; margin-bottom: 10px;"></i>
-        <h4 class="text-white fw-bold mb-2">למחוק את הארוחה?</h4>
-        <p style="color: #94a3b8; margin-bottom: 20px;">הפעולה היא סופית ולא ניתנת לביטול.</p>
-        <div class="d-flex justify-content-between">
-            <button onclick="closeModal('confirmModal')" class="btn-cancel">ביטול</button>
-            <button onclick="performDelete()" class="btn-confirm">מחיקה</button>
-        </div>
-    </div>
-</div>
-
-<div class="modal-overlay" id="alertModal">
-    <div class="modal-box text-center">
-        <i class="bi bi-check-circle text-success" style="font-size: 3rem; margin-bottom: 10px;" id="alertIcon"></i>
-        <h4 class="text-white fw-bold mb-3" id="alertTitle">הצלחה!</h4>
-        <p style="color: #94a3b8; margin-bottom: 20px;" id="alertText">הפעולה בוצעה</p>
-        <button onclick="closeModal('alertModal')" class="btn-glow" style="padding: 10px;">אישור</button>
+        <div id="itemsList" class="text-white"></div>
     </div>
 </div>
 
 <script>
     const API_URL = '/api';
     let currentUser = null;
-    let allMeals = []; 
-    let itemToDeleteId = null;
-    let lastKnownDate = new Date().toDateString(); // שינוי לפורמט מלא של תאריך
+    let allMeals = [];
+    let lastDate = new Date().toDateString();
 
-    function togglePass(inputId, icon) {
-        const input = document.getElementById(inputId);
-        if (input.type === "password") {
-            input.type = "text";
-            icon.classList.remove("bi-eye");
-            icon.classList.add("bi-eye-slash");
-        } else {
-            input.type = "password";
-            icon.classList.remove("bi-eye-slash");
-            icon.classList.add("bi-eye");
-        }
+    function togglePass(id, icon) {
+        const input = document.getElementById(id);
+        input.type = input.type === 'password' ? 'text' : 'password';
+        icon.classList.toggle('bi-eye'); icon.classList.toggle('bi-eye-slash');
     }
-
-    function showError(elementId, msg) { const el = document.getElementById(elementId); el.innerText = msg; el.style.display = 'block'; }
-    function clearErrors() { document.getElementById('loginError').style.display = 'none'; document.getElementById('regError').style.display = 'none'; }
-
-    function showAlert(title, text, isSuccess = true) {
-        document.getElementById('alertTitle').innerText = title;
-        document.getElementById('alertText').innerText = text;
-        const icon = document.getElementById('alertIcon');
-        if (isSuccess) icon.className = 'bi bi-check-circle text-success';
-        else icon.className = 'bi bi-x-circle text-danger';
-        document.getElementById('alertModal').style.display = 'flex';
-    }
-
-    function openAddModal() { 
-        document.getElementById('addModal').style.display = 'flex'; 
-        document.getElementById('foodName').value = '';
-        document.getElementById('foodCal').value = '';
-    }
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
     function init() {
-        try {
-            const savedUser = localStorage.getItem('dietUser');
-            if (savedUser) { 
-                currentUser = JSON.parse(savedUser); 
-                document.getElementById('loginScreen').classList.add('hidden');
-                document.getElementById('appScreen').classList.remove('hidden');
-                loadData(); 
-                
-                // שומר הלילה המשופר - רענון דף מלא בחצות
-                setInterval(checkDateChange, 10000); // בודק כל 10 שניות
-            }
-        } catch(e) { console.error(e); }
-    }
-
-    function checkDateChange() {
-        const currentDate = new Date().toDateString();
-        if (currentDate !== lastKnownDate) {
-            console.log("יום חדש! מרענן דף...");
-            location.reload(); // רענון דף מלא שינקה הכל
+        const saved = localStorage.getItem('dietUser');
+        if (saved) {
+            currentUser = JSON.parse(saved);
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('appScreen').classList.remove('hidden');
+            loadData();
+            setInterval(() => {
+                if (new Date().toDateString() !== lastDate) location.reload();
+            }, 10000);
         }
-    }
-
-    function showLogin() { clearErrors(); hideAll(); document.getElementById('loginScreen').classList.remove('hidden'); }
-    function showRegister() { clearErrors(); hideAll(); document.getElementById('registerScreen').classList.remove('hidden'); }
-    function showApp() { hideAll(); document.getElementById('appScreen').classList.remove('hidden'); loadData(); }
-    function hideAll() { document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('registerScreen').classList.add('hidden'); document.getElementById('appScreen').classList.add('hidden'); }
-    function logout() { localStorage.removeItem('dietUser'); currentUser = null; showLogin(); }
-
-    async function register() {
-        clearErrors();
-        const email = document.getElementById('regEmail').value; const pass = document.getElementById('regPass').value;
-        if(!email || !pass) return showError('regError', 'חסרים פרטים');
-        try {
-            const res = await fetch(`${API_URL}/auth/register`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ email, password: pass }) });
-            if (res.ok) { 
-                showAlert('ברוכה הבאה!', 'נרשמת בהצלחה למערכת');
-                showLogin(); 
-            } else { showError('regError', await res.text()); }
-        } catch(e) { showError('regError', 'שגיאה'); }
     }
 
     async function login() {
-        clearErrors();
-        const email = document.getElementById('loginEmail').value; const pass = document.getElementById('loginPass').value;
-        if(!email || !pass) return showError('loginError', 'נא למלא פרטים');
+        const email = document.getElementById('loginEmail').value;
+        const pass = document.getElementById('loginPass').value;
         try {
-            const res = await fetch(`${API_URL}/auth/login`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ email, password: pass }) });
+            const res = await fetch(`${API_URL}/auth/login`, {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ email, password: pass })
+            });
             if (res.ok) {
                 const data = await res.json();
                 currentUser = { id: data.userId, email: data.email };
                 localStorage.setItem('dietUser', JSON.stringify(currentUser));
-                showApp();
-            } else { showError('loginError', 'פרטים שגויים'); }
-        } catch(e) { showError('loginError', 'שגיאה'); }
-    }
-
-    async function loadData() {
-        if (!currentUser) return;
-        try {
-            const resMeals = await fetch(`${API_URL}/meals?userId=${currentUser.id}`);
-            allMeals = await resMeals.json();
-            renderGrid(allMeals);
+                location.reload();
+            } else document.getElementById('loginError').style.display = 'block';
         } catch(e) {}
     }
 
-    function renderGrid(meals) {
-        const todayStr = new Date().toDateString();
-        const todaysMeals = meals.filter(m => new Date(m.date).toDateString() === todayStr);
+    async function register() {
+        const email = document.getElementById('regEmail').value;
+        const pass = document.getElementById('regPass').value;
+        const res = await fetch(`${API_URL}/auth/register`, {
+            method: 'POST', headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ email, password: pass })
+        });
+        if (res.ok) { alert('נרשמת בהצלחה'); showLogin(); }
+    }
 
-        const totalCal = todaysMeals.reduce((sum, m) => sum + m.calories, 0);
-        document.getElementById('totalCalories').innerText = totalCal;
+    function showRegister() { document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('registerScreen').classList.remove('hidden'); }
+    function showLogin() { document.getElementById('registerScreen').classList.add('hidden'); document.getElementById('loginScreen').classList.remove('hidden'); }
+    function logout() { localStorage.removeItem('dietUser'); location.reload(); }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    function openAddModal() { document.getElementById('addModal').style.display = 'flex'; }
 
-        const categories = {
-            morning: { title: 'בוקר', icon: '🥐', cal: 0, items: [], css: 'border-morning' },
-            noon:    { title: 'צהריים', icon: '🍛', cal: 0, items: [], css: 'border-noon' },
-            evening: { title: 'ערב', icon: '🥗', cal: 0, items: [], css: 'border-evening' },
-            snack:   { title: 'נשנוש', icon: '🥨', cal: 0, items: [], css: 'border-snack' }
-        };
+    async function loadData() {
+        if (!currentUser) return;
+        const res = await fetch(`${API_URL}/meals?userId=${currentUser.id}`);
+        allMeals = await res.json();
+        renderGrid();
+    }
+
+    function renderGrid() {
+        const today = new Date().toDateString();
+        const todaysMeals = allMeals.filter(m => new Date(m.date).toDateString() === today);
+        document.getElementById('totalCalories').innerText = todaysMeals.reduce((s, m) => s + m.calories, 0);
+
+        const cats = { morning: {t:'בוקר', i:'🥐', b:'border-morning', cal:0, n:0}, noon: {t:'צהריים', i:'🍛', b:'border-noon', cal:0, n:0}, evening: {t:'ערב', i:'🥗', b:'border-evening', cal:0, n:0}, snack: {t:'נשנוש', i:'🥨', b:'border-snack', cal:0, n:0} };
 
         todaysMeals.forEach(m => {
             const h = new Date(m.date).getHours();
-            let key = 'snack';
-            if (h >= 5 && h < 12) key = 'morning';
-            else if (h >= 12 && h < 17) key = 'noon';
-            else if (h >= 17 && h < 22) key = 'evening';
-            categories[key].cal += m.calories;
-            categories[key].items.push(m);
+            let k = 'snack';
+            if (h >= 5 && h < 12) k = 'morning'; else if (h >= 12 && h < 17) k = 'noon'; else if (h >= 17 && h < 22) k = 'evening';
+            cats[k].cal += m.calories; cats[k].n++;
         });
 
         const grid = document.getElementById('mealsGrid');
         grid.innerHTML = '';
-        for (const key in categories) {
-            const cat = categories[key];
-            grid.innerHTML += `
-                <div class="meal-card ${cat.css}" onclick="showCategoryDetails('${key}')">
-                    <div class="card-icon">${cat.icon}</div>
-                    <div class="card-title">${cat.title}</div>
-                    <div class="card-cal">${cat.cal}</div>
-                    <div class="card-sub">${cat.items.length} פריטים</div>
-                </div>`;
-        }
+        Object.keys(cats).forEach(k => {
+            const c = cats[k];
+            grid.innerHTML += `<div class="meal-card ${c.b}" onclick="showDetails('${k}')"><h3>${c.i}</h3><div>${c.t}</div><div class="fw-bold">${c.cal}</div><small>${c.n} פריטים</small></div>`;
+        });
     }
 
-    function showCategoryDetails(key) {
-        const titles = { morning: 'ארוחת בוקר', noon: 'ארוחת צהריים', evening: 'ארוחת ערב', snack: 'נשנושים' };
-        document.getElementById('viewTitle').innerText = titles[key];
-        
-        const todayStr = new Date().toDateString();
+    function showDetails(key) {
+        document.getElementById('viewTitle').innerText = key;
+        const today = new Date().toDateString();
         const items = allMeals.filter(m => {
-            if (new Date(m.date).toDateString() !== todayStr) return false;
+            if (new Date(m.date).toDateString() !== today) return false;
             const h = new Date(m.date).getHours();
             if (key === 'morning') return h >= 5 && h < 12;
-            if (key === 'noon') return h >=
+            if (key === 'noon') return h >= 12 && h < 17;
+            if (key === 'evening') return h >= 17 && h < 22;
+            return h < 5 || h >= 22;
+        });
+        const list = document.getElementById('itemsList');
+        list.innerHTML = items.length ? '' : 'ריק';
+        items.forEach(m => {
+            const time = new Date(m.date).toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit'});
+            list.innerHTML += `<div class="item-row"><div>${m.name}<br><small>${time}</small></div><div>${m.calories}</div></div>`;
+        });
+        document.getElementById('viewModal').style.display = 'flex';
+    }
+
+    async function addMeal() {
+        const type = document.getElementById('mealType').value;
+        const name = document.getElementById('foodName').value;
+        const cal = document.getElementById('foodCal').value;
+        const dateStr = new Date().toISOString();
+        await fetch(`${API_URL}/meals`, {
+            method: 'POST', headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ name, calories: parseInt(cal), date: dateStr, userId: currentUser.id })
+        });
+        closeModal('addModal');
+        loadData();
+    }
+
+    init();
+</script>
+</body>
+</html>
