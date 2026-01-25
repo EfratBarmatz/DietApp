@@ -51,57 +51,112 @@
     const API_URL = '/api';
 
     async function loadStats() {
-        const res = await fetch(`${API_URL}/stats`);
-        const data = await res.json();
-        document.getElementById('calDisplay').innerText = data.dailyCalories || 0;
+        try {
+            const res = await fetch(`${API_URL}/stats`);
+            if (!res.ok) console.error("Stats Error:", res.status);
+            const data = await res.json();
+            document.getElementById('calDisplay').innerText = data.dailyCalories || 0;
+        } catch (e) {
+            console.error("Failed to load stats:", e);
+        }
     }
 
     async function loadMeals() {
-        const res = await fetch(`${API_URL}/meals`);
-        const meals = await res.json();
         const list = document.getElementById('mealsList');
-        list.innerHTML = '';
-        
-        meals.forEach(m => {
-            const time = new Date(m.date).toLocaleTimeString('he-IL', {hour: '2-digit', minute:'2-digit'});
-            list.innerHTML += `
-                <div class="list-group-item d-flex justify-content-between align-items-center">
-                    <div>
-                        <div class="fw-bold text-dark">${m.name}</div>
-                        <small class="text-muted" style="font-size: 0.8em">🕒 ${time}</small>
-                    </div>
-                    <div class="d-flex align-items-center gap-3">
-                        <span class="badge bg-light text-dark border">${m.calories} קל'</span>
-                        <i class="bi bi-trash delete-btn" onclick="deleteMeal(${m.id})" title="מחק"></i>
-                    </div>
-                </div>`;
-        });
+        try {
+            const res = await fetch(`${API_URL}/meals`);
+            
+            if (!res.ok) {
+                list.innerHTML = '<div class="text-center text-danger">שגיאה בטעינת הנתונים</div>';
+                return;
+            }
+
+            const meals = await res.json();
+            console.log("Meals loaded:", meals); // זה יעזור לנו לבדוק מה מגיע
+
+            list.innerHTML = ''; // ניקוי הרשימה
+
+            if (meals.length === 0) {
+                list.innerHTML = '<div class="text-center text-muted py-3">עדיין לא נרשמו ארוחות היום. זה הזמן להוסיף! 🥗</div>';
+                return;
+            }
+            
+            meals.forEach(m => {
+                // בדיקה שהשמות תואמים (גדולה/קטנה)
+                const name = m.name || m.Name || "ללא שם";
+                const calories = m.calories || m.Calories || 0;
+                const id = m.id || m.Id;
+                
+                const time = new Date(m.date || m.Date).toLocaleTimeString('he-IL', {hour: '2-digit', minute:'2-digit'});
+                
+                list.innerHTML += `
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="fw-bold text-dark">${name}</div>
+                            <small class="text-muted" style="font-size: 0.8em">🕒 ${time}</small>
+                        </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="badge bg-light text-dark border">${calories} קל'</span>
+                            <i class="bi bi-trash delete-btn" onclick="deleteMeal(${id})" title="מחק"></i>
+                        </div>
+                    </div>`;
+            });
+        } catch (e) {
+            console.error(e);
+            list.innerHTML = '<div class="text-center text-danger">שגיאת תקשורת עם השרת</div>';
+        }
     }
 
     async function addMeal() {
-        const name = document.getElementById('foodName').value;
-        const cal = document.getElementById('calories').value;
-        if(!name || !cal) return;
+        const nameInput = document.getElementById('foodName');
+        const calInput = document.getElementById('calories');
+        const btn = document.querySelector('button');
 
-        await fetch(`${API_URL}/meals`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ name, calories: parseInt(cal) })
-        });
+        if(!nameInput.value || !calInput.value) {
+            alert('נא למלא שם וקלוריות');
+            return;
+        }
 
-        document.getElementById('foodName').value = '';
-        document.getElementById('calories').value = '';
-        loadStats(); loadMeals();
+        btn.disabled = true;
+        btn.innerText = 'שומר...';
+
+        try {
+            const res = await fetch(`${API_URL}/meals`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ name: nameInput.value, calories: parseInt(calInput.value) })
+            });
+            
+            if (res.ok) {
+                nameInput.value = '';
+                calInput.value = '';
+                await loadStats(); 
+                await loadMeals();
+            } else {
+                alert('שגיאה בשמירה');
+            }
+        } catch (e) {
+            alert('שגיאה בשמירה');
+        } finally {
+            btn.disabled = false;
+            btn.innerText = 'הוסף +';
+        }
     }
 
-    // פונקציה חדשה למחיקה
     async function deleteMeal(id) {
         if(!confirm('למחוק את הארוחה?')) return;
-        await fetch(`${API_URL}/meals/${id}`, { method: 'DELETE' });
-        loadStats(); loadMeals();
+        try {
+            await fetch(`${API_URL}/meals/${id}`, { method: 'DELETE' });
+            loadStats(); 
+            loadMeals();
+        } catch (e) {
+            alert('שגיאה במחיקה');
+        }
     }
 
-    loadStats(); loadMeals();
+    // הפעלה ראשונית
+    loadStats(); 
+    loadMeals();
 </script>
 </body>
 </html>
