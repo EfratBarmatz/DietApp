@@ -3,162 +3,310 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מערכת הדיאטה שלי</title>
+    <title>My Diet App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
     <style>
-        body { background-color: #f3f4f6; font-family: 'Segoe UI', sans-serif; }
-        .main-card { max-width: 600px; margin: 20px auto; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: none; overflow: hidden; }
-        /* שינוי: רקע ירוק במקום כחול */
-        .header { background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 40px 20px; text-align: center; }
-        .calories-circle { width: 140px; height: 140px; border-radius: 50%; background: white; color: #059669; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: -70px auto 20px; border: 6px solid #ecfdf5; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .cal-number { font-size: 36px; font-weight: 800; line-height: 1; }
-        .cal-label { font-size: 14px; color: #6b7280; }
-        .list-group-item { border-left: none; border-right: none; padding: 15px; transition: 0.2s; }
-        .list-group-item:hover { background-color: #f9fafb; }
-        .delete-btn { color: #ef4444; cursor: pointer; opacity: 0.6; transition: 0.2s; padding: 5px; }
-        .delete-btn:hover { opacity: 1; transform: scale(1.1); }
+        :root {
+            --primary-color: #6366f1; /* סגול אינדיגו מודרני */
+            --secondary-color: #a855f7;
+            --bg-color: #f8fafc;
+        }
+
+        body {
+            font-family: 'Heebo', sans-serif;
+            background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            color: #334155;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+        }
+
+        .card-custom {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: none;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .auth-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            margin-bottom: 20px;
+        }
+
+        .btn-gradient {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: bold;
+            transition: opacity 0.2s;
+        }
+        .btn-gradient:hover { opacity: 0.9; color: white; }
+
+        .form-control {
+            background: #f1f5f9;
+            border: none;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+        .form-control:focus { background: white; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
+
+        /* עיצוב רשימת הארוחות */
+        .meal-item {
+            background: white;
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            border: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+        .meal-item:hover { transform: translateY(-2px); }
+
+        .calories-badge {
+            background: #ecfdf5;
+            color: #059669;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        /* מסכים */
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-<div class="card main-card">
-    <div class="header">
-        <h2 class="mb-0">🍏 יומן בריאות</h2>
-        <p class="opacity-75">צעד קטן בכל יום</p>
-    </div>
+<div class="app-container">
     
-    <div class="card-body p-4 pt-0">
-        <div class="calories-circle">
-            <span class="cal-number" id="calDisplay">0</span>
-            <span class="cal-label">קלוריות היום</span>
+    <div id="loginScreen" class="card card-custom p-4">
+        <h2 class="text-center mb-4 fw-bold" style="color: var(--primary-color);">היי, ברוכה הבאה! 👋</h2>
+        <div class="mb-3">
+            <label class="form-label text-muted small">אימייל</label>
+            <input type="email" id="loginEmail" class="form-control" dir="ltr">
         </div>
-
-        <div class="input-group mb-4 shadow-sm">
-            <input type="text" id="foodName" class="form-control border-0 bg-light" placeholder="מה אכלת?">
-            <input type="number" id="calories" class="form-control border-0 bg-light" placeholder="קל'" style="max-width: 80px;">
-            <button class="btn btn-success" onclick="addMeal()">הוסף +</button>
+        <div class="mb-4">
+            <label class="form-label text-muted small">סיסמה</label>
+            <input type="password" id="loginPass" class="form-control" dir="ltr">
         </div>
-
-        <h6 class="text-muted mb-3 border-bottom pb-2">ארוחות היום</h6>
-        <div id="mealsList" class="list-group list-group-flush">
-            <div class="text-center text-muted py-3">טוען נתונים...</div>
+        <button onclick="login()" class="btn btn-gradient w-100 mb-3">כניסה</button>
+        <div class="text-center">
+            <span class="text-muted">אין לך חשבון?</span>
+            <a href="#" onclick="showRegister()" style="color: var(--primary-color); text-decoration: none; font-weight: bold;">הרשמי עכשיו</a>
         </div>
     </div>
+
+    <div id="registerScreen" class="card card-custom p-4 hidden">
+        <h2 class="text-center mb-4 fw-bold" style="color: var(--secondary-color);">יצירת חשבון חדש ✨</h2>
+        <div class="mb-3">
+            <label class="form-label text-muted small">אימייל</label>
+            <input type="email" id="regEmail" class="form-control" dir="ltr">
+        </div>
+        <div class="mb-4">
+            <label class="form-label text-muted small">סיסמה</label>
+            <input type="password" id="regPass" class="form-control" dir="ltr">
+        </div>
+        <button onclick="register()" class="btn btn-gradient w-100 mb-3">הרשמה</button>
+        <div class="text-center">
+            <a href="#" onclick="showLogin()" class="text-muted" style="text-decoration: none;">חזרה לכניסה</a>
+        </div>
+    </div>
+
+    <div id="appScreen" class="hidden">
+        <div class="card-custom">
+            <div class="auth-header">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="badge bg-white text-dark opacity-75">היום</span>
+                    <button onclick="logout()" class="btn btn-sm btn-outline-light border-0"><i class="bi bi-box-arrow-right"></i> יציאה</button>
+                </div>
+                <h1 id="totalCalories" class="display-2 fw-bold mb-0">0</h1>
+                <p class="mb-0 opacity-75">קלוריות נצרכו</p>
+            </div>
+
+            <div class="p-4 pt-0">
+                <div class="input-group mb-4 shadow-sm" style="border-radius: 12px; overflow: hidden;">
+                    <input type="text" id="foodName" class="form-control mb-0 bg-white" placeholder="מה אכלת?" style="border-radius: 0;">
+                    <input type="number" id="foodCal" class="form-control mb-0 bg-white" placeholder="קל'" style="max-width: 80px; border-radius: 0; border-right: 1px solid #eee;">
+                    <button onclick="addMeal()" class="btn btn-dark px-4"><i class="bi bi-plus-lg"></i></button>
+                </div>
+
+                <div id="mealsList">
+                    </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <script>
     const API_URL = '/api';
+    let currentUser = null;
 
-    async function loadStats() {
-        try {
-            const res = await fetch(`${API_URL}/stats`);
-            if (!res.ok) console.error("Stats Error:", res.status);
-            const data = await res.json();
-            document.getElementById('calDisplay').innerText = data.dailyCalories || 0;
-        } catch (e) {
-            console.error("Failed to load stats:", e);
+    // --- אתחול ---
+    function init() {
+        const savedUser = localStorage.getItem('dietUser');
+        if (savedUser) {
+            currentUser = JSON.parse(savedUser);
+            showApp();
+        } else {
+            showLogin();
         }
     }
 
-    async function loadMeals() {
-        const list = document.getElementById('mealsList');
-        try {
-            const res = await fetch(`${API_URL}/meals`);
-            
-            if (!res.ok) {
-                list.innerHTML = '<div class="text-center text-danger">שגיאה בטעינת הנתונים</div>';
-                return;
-            }
-
-            const meals = await res.json();
-            console.log("Meals loaded:", meals); // זה יעזור לנו לבדוק מה מגיע
-
-            list.innerHTML = ''; // ניקוי הרשימה
-
-            if (meals.length === 0) {
-                list.innerHTML = '<div class="text-center text-muted py-3">עדיין לא נרשמו ארוחות היום. זה הזמן להוסיף! 🥗</div>';
-                return;
-            }
-            
-            meals.forEach(m => {
-                // בדיקה שהשמות תואמים (גדולה/קטנה)
-                const name = m.name || m.Name || "ללא שם";
-                const calories = m.calories || m.Calories || 0;
-                const id = m.id || m.Id;
-                
-                const time = new Date(m.date || m.Date).toLocaleTimeString('he-IL', {hour: '2-digit', minute:'2-digit'});
-                
-                list.innerHTML += `
-                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="fw-bold text-dark">${name}</div>
-                            <small class="text-muted" style="font-size: 0.8em">🕒 ${time}</small>
-                        </div>
-                        <div class="d-flex align-items-center gap-3">
-                            <span class="badge bg-light text-dark border">${calories} קל'</span>
-                            <i class="bi bi-trash delete-btn" onclick="deleteMeal(${id})" title="מחק"></i>
-                        </div>
-                    </div>`;
-            });
-        } catch (e) {
-            console.error(e);
-            list.innerHTML = '<div class="text-center text-danger">שגיאת תקשורת עם השרת</div>';
-        }
+    // --- ניווט בין מסכים ---
+    function showLogin() {
+        hideAll();
+        document.getElementById('loginScreen').classList.remove('hidden');
+    }
+    function showRegister() {
+        hideAll();
+        document.getElementById('registerScreen').classList.remove('hidden');
+    }
+    function showApp() {
+        hideAll();
+        document.getElementById('appScreen').classList.remove('hidden');
+        loadData();
+    }
+    function hideAll() {
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('registerScreen').classList.add('hidden');
+        document.getElementById('appScreen').classList.add('hidden');
     }
 
-   async function addMeal() {
-        const nameInput = document.getElementById('foodName');
-        const calInput = document.getElementById('calories');
-        const btn = document.querySelector('button');
-
-        if(!nameInput.value || !calInput.value) {
-            alert('נא למלא את כל השדות');
-            return;
-        }
-
-        btn.disabled = true;
-        btn.innerText = 'שומר...';
+    // --- לוגיקת משתמשים (Auth) ---
+    async function register() {
+        const email = document.getElementById('regEmail').value;
+        const pass = document.getElementById('regPass').value;
+        if(!email || !pass) return alert('נא למלא אימייל וסיסמה');
 
         try {
-            const res = await fetch(`${API_URL}/meals`, {
+            const res = await fetch(`${API_URL}/auth/register`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ name: nameInput.value, calories: parseInt(calInput.value) })
+                body: JSON.stringify({ email, password: pass })
+            });
+            if (res.ok) {
+                alert('נרשמת בהצלחה! עכשיו אפשר להתחבר.');
+                showLogin();
+            } else {
+                alert(await res.text());
+            }
+        } catch(e) { alert('שגיאה בהרשמה'); }
+    }
+
+    async function login() {
+        const email = document.getElementById('loginEmail').value;
+        const pass = document.getElementById('loginPass').value;
+        if(!email || !pass) return alert('נא למלא את הפרטים');
+
+        try {
+            const res = await fetch(`${API_URL}/auth/login`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ email, password: pass })
             });
             
             if (res.ok) {
-                nameInput.value = '';
-                calInput.value = '';
-                await loadStats(); 
-                await loadMeals();
+                const data = await res.json();
+                currentUser = { id: data.userId, email: data.email };
+                localStorage.setItem('dietUser', JSON.stringify(currentUser)); // שמירה בדפדפן
+                showApp();
             } else {
-                // השינוי: הצגת השגיאה האמיתית מהשרת
-                const errorText = await res.text(); 
-                alert('שגיאה בשמירה: ' + errorText); // <--- זה יקפוץ למסך
+                alert('שם משתמש או סיסמה שגויים');
             }
-        } catch (e) {
-            alert('שגיאת תקשורת: ' + e.message);
-        } finally {
-            btn.disabled = false;
-            btn.innerText = 'הוסף +';
-        }
+        } catch(e) { alert('שגיאת תקשורת'); }
     }
 
-    async function deleteMeal(id) {
-        if(!confirm('למחוק את הארוחה?')) return;
+    function logout() {
+        localStorage.removeItem('dietUser');
+        currentUser = null;
+        showLogin();
+    }
+
+    // --- לוגיקת אפליקציה (Meals) ---
+    async function loadData() {
+        if (!currentUser) return;
+        
+        // טעינת סטטיסטיקה
         try {
-            await fetch(`${API_URL}/meals/${id}`, { method: 'DELETE' });
-            loadStats(); 
-            loadMeals();
-        } catch (e) {
-            alert('שגיאה במחיקה');
-        }
+            const resStats = await fetch(`${API_URL}/stats?userId=${currentUser.id}`);
+            const dataStats = await resStats.json();
+            document.getElementById('totalCalories').innerText = dataStats.dailyCalories || 0;
+        } catch(e) {}
+
+        // טעינת ארוחות
+        try {
+            const resMeals = await fetch(`${API_URL}/meals?userId=${currentUser.id}`);
+            const meals = await resMeals.json();
+            const list = document.getElementById('mealsList');
+            list.innerHTML = '';
+            
+            if (meals.length === 0) {
+                list.innerHTML = '<div class="text-center text-muted py-4">עדיין לא אכלת היום כלום? 🥗</div>';
+                return;
+            }
+
+            meals.forEach(m => {
+                const time = new Date(m.date).toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit'});
+                list.innerHTML += `
+                    <div class="meal-item">
+                        <div>
+                            <div class="fw-bold">${m.name}</div>
+                            <small class="text-muted opacity-75">${time}</small>
+                        </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="calories-badge">${m.calories} קל'</span>
+                            <i class="bi bi-trash text-danger" style="cursor:pointer" onclick="deleteMeal(${m.id})"></i>
+                        </div>
+                    </div>`;
+            });
+        } catch(e) {}
     }
 
-    // הפעלה ראשונית
-    loadStats(); 
-    loadMeals();
-</script>
-</body>
-</html>
+    async function addMeal() {
+        const name = document.getElementById('foodName');
+        const cal = document.getElementById('foodCal');
+        if(!name.value || !cal.value) return;
+
+        // שליחת הזמן המקומי מהטלפון
+        const localTime = (new Date(new Date() - new Date().getTimezoneOffset() * 60000)).toISOString().slice(0, -1);
+
+        try {
+            await fetch(`${API_URL}/meals`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    name: name.value,
+                    calories: parseInt(cal.value),
+                    date: localTime,
+                    userId: currentUser.id // שולחים את המזהה שלנו!
+                })
+            });
+            name.value = ''; cal.value = '';
+            loadData();
+        } catch(e) { alert('תקלה בשמ
