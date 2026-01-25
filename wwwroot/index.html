@@ -227,7 +227,7 @@
 <div class="modal-overlay" id="viewModal">
     <div class="modal-box">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="m-0 fw-bold text-white" id="viewTitle">ארוחת בוקר</h4>
+            <h4 class="m-0 fw-bold text-white" id="viewTitle">ארוחה</h4>
             <i class="bi bi-x-lg close-btn" onclick="closeModal('viewModal')"></i>
         </div>
         <div id="itemsList" style="max-height: 300px; overflow-y: auto; color: white;"></div>
@@ -246,15 +246,6 @@
     </div>
 </div>
 
-<div class="modal-overlay" id="alertModal">
-    <div class="modal-box text-center">
-        <i class="bi bi-check-circle text-success" style="font-size: 3rem; margin-bottom: 10px;" id="alertIcon"></i>
-        <h4 class="text-white fw-bold mb-3" id="alertTitle">הצלחה!</h4>
-        <p style="color: #94a3b8; margin-bottom: 20px;" id="alertText">הפעולה בוצעה</p>
-        <button onclick="closeModal('alertModal')" class="btn-glow" style="padding: 10px;">אישור</button>
-    </div>
-</div>
-
 <script>
     const API_URL = '/api';
     let currentUser = null;
@@ -265,34 +256,11 @@
     function togglePass(inputId, icon) {
         const input = document.getElementById(inputId);
         if (input.type === "password") {
-            input.type = "text";
-            icon.classList.remove("bi-eye");
-            icon.classList.add("bi-eye-slash");
+            input.type = "text"; icon.classList.remove("bi-eye"); icon.classList.add("bi-eye-slash");
         } else {
-            input.type = "password";
-            icon.classList.remove("bi-eye-slash");
-            icon.classList.add("bi-eye");
+            input.type = "password"; icon.classList.remove("bi-eye-slash"); icon.classList.add("bi-eye");
         }
     }
-
-    function showError(elementId, msg) { const el = document.getElementById(elementId); el.innerText = msg; el.style.display = 'block'; }
-    function clearErrors() { document.getElementById('loginError').style.display = 'none'; document.getElementById('regError').style.display = 'none'; }
-
-    function showAlert(title, text, isSuccess = true) {
-        document.getElementById('alertTitle').innerText = title;
-        document.getElementById('alertText').innerText = text;
-        const icon = document.getElementById('alertIcon');
-        if (isSuccess) icon.className = 'bi bi-check-circle text-success';
-        else icon.className = 'bi bi-x-circle text-danger';
-        document.getElementById('alertModal').style.display = 'flex';
-    }
-
-    function openAddModal() { 
-        document.getElementById('addModal').style.display = 'flex'; 
-        document.getElementById('foodName').value = '';
-        document.getElementById('foodCal').value = '';
-    }
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
     function init() {
         try {
@@ -302,62 +270,55 @@
                 document.getElementById('loginScreen').classList.add('hidden');
                 document.getElementById('appScreen').classList.remove('hidden');
                 loadData(); 
-                setInterval(checkDateChange, 10000); 
+                setInterval(() => {
+                    if (new Date().toDateString() !== lastKnownDate) location.reload();
+                }, 10000);
             }
-        } catch(e) { console.error(e); }
-    }
-
-    function checkDateChange() {
-        const currentDate = new Date().toDateString();
-        if (currentDate !== lastKnownDate) {
-            location.reload(); 
-        }
-    }
-
-    function showLogin() { clearErrors(); hideAll(); document.getElementById('loginScreen').classList.remove('hidden'); }
-    function showRegister() { clearErrors(); hideAll(); document.getElementById('registerScreen').classList.remove('hidden'); }
-    function showApp() { hideAll(); document.getElementById('appScreen').classList.remove('hidden'); loadData(); }
-    function hideAll() { document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('registerScreen').classList.add('hidden'); document.getElementById('appScreen').classList.add('hidden'); }
-    function logout() { localStorage.removeItem('dietUser'); currentUser = null; showLogin(); }
-
-    async function register() {
-        clearErrors();
-        const email = document.getElementById('regEmail').value; const pass = document.getElementById('regPass').value;
-        if(!email || !pass) return showError('regError', 'חסרים פרטים');
-        try {
-            const res = await fetch(`${API_URL}/auth/register`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ email, password: pass }) });
-            if (res.ok) { showAlert('ברוכה הבאה!', 'נרשמת בהצלחה'); showLogin(); }
-            else { showError('regError', await res.text()); }
-        } catch(e) { showError('regError', 'שגיאה'); }
-    }
-
-    async function login() {
-        clearErrors();
-        const email = document.getElementById('loginEmail').value; const pass = document.getElementById('loginPass').value;
-        if(!email || !pass) return showError('loginError', 'נא למלא פרטים');
-        try {
-            const res = await fetch(`${API_URL}/auth/login`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ email, password: pass }) });
-            if (res.ok) {
-                const data = await res.json();
-                currentUser = { id: data.userId, email: data.email };
-                localStorage.setItem('dietUser', JSON.stringify(currentUser));
-                showApp();
-            } else { showError('loginError', 'פרטים שגויים'); }
-        } catch(e) { showError('loginError', 'שגיאה'); }
-    }
-
-    async function loadData() {
-        if (!currentUser) return;
-        try {
-            const resMeals = await fetch(`${API_URL}/meals?userId=${currentUser.id}`);
-            allMeals = await resMeals.json();
-            renderGrid(allMeals);
         } catch(e) {}
     }
 
-    function renderGrid(meals) {
+    async function login() {
+        const email = document.getElementById('loginEmail').value;
+        const pass = document.getElementById('loginPass').value;
+        const res = await fetch(`${API_URL}/auth/login`, {
+            method: 'POST', headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ email, password: pass })
+        });
+        if (res.ok) {
+            const data = await res.json();
+            currentUser = { id: data.userId, email: data.email };
+            localStorage.setItem('dietUser', JSON.stringify(currentUser));
+            location.reload();
+        }
+    }
+
+    async function register() {
+        const email = document.getElementById('regEmail').value;
+        const pass = document.getElementById('regPass').value;
+        await fetch(`${API_URL}/auth/register`, {
+            method: 'POST', headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ email, password: pass })
+        });
+        showLogin();
+    }
+
+    function showLogin() { hideAll(); document.getElementById('loginScreen').classList.remove('hidden'); }
+    function showRegister() { hideAll(); document.getElementById('registerScreen').classList.remove('hidden'); }
+    function hideAll() { document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('registerScreen').classList.add('hidden'); document.getElementById('appScreen').classList.add('hidden'); }
+    function logout() { localStorage.removeItem('dietUser'); location.reload(); }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    function openAddModal() { document.getElementById('addModal').style.display = 'flex'; }
+
+    async function loadData() {
+        if (!currentUser) return;
+        const resMeals = await fetch(`${API_URL}/meals?userId=${currentUser.id}`);
+        allMeals = await resMeals.json();
+        renderGrid();
+    }
+
+    function renderGrid() {
         const todayStr = new Date().toDateString();
-        const todaysMeals = meals.filter(m => new Date(m.date).toDateString() === todayStr);
+        const todaysMeals = allMeals.filter(m => new Date(m.date).toDateString() === todayStr);
         document.getElementById('totalCalories').innerText = todaysMeals.reduce((sum, m) => sum + m.calories, 0);
 
         const categories = {
@@ -368,11 +329,10 @@
         };
 
         todaysMeals.forEach(m => {
+            // התיקון: מחשבים לפי השעה כדי להחזיר לקטגוריה הנכונה בגרייד
             const h = new Date(m.date).getHours();
             let key = 'snack';
-            if (h >= 5 && h < 12) key = 'morning';
-            else if (h >= 12 && h < 17) key = 'noon';
-            else if (h >= 17 && h < 22) key = 'evening';
+            if (h === 9) key = 'morning'; else if (h === 14) key = 'noon'; else if (h === 20) key = 'evening';
             categories[key].cal += m.calories;
             categories[key].items.push(m);
         });
@@ -398,10 +358,10 @@
         const items = allMeals.filter(m => {
             if (new Date(m.date).toDateString() !== todayStr) return false;
             const h = new Date(m.date).getHours();
-            if (key === 'morning') return h >= 5 && h < 12;
-            if (key === 'noon') return h >= 12 && h < 17;
-            if (key === 'evening') return h >= 17 && h < 22;
-            return h < 5 || h >= 22;
+            if (key === 'morning') return h === 9;
+            if (key === 'noon') return h === 14;
+            if (key === 'evening') return h === 20;
+            return h !== 9 && h !== 14 && h !== 20;
         });
 
         const list = document.getElementById('itemsList');
@@ -424,8 +384,16 @@
         const type = document.getElementById('mealType').value;
         const name = document.getElementById('foodName').value;
         const cal = document.getElementById('foodCal').value;
-        if(!name || !cal) return showAlert('שגיאה', 'מלאי הכל', false);
-        const dateStr = new Date().toISOString();
+        
+        // יצירת שעה פיקטיבית כדי שהשרת ידע לאן לשייך (בוקר=9, צהריים=14, ערב=20)
+        let d = new Date();
+        if(type === 'morning') d.setHours(9,0,0);
+        else if(type === 'noon') d.setHours(14,0,0);
+        else if(type === 'evening') d.setHours(20,0,0);
+        else d.setHours(23,0,0); // נשנוש
+
+        const dateStr = new Date(d.getTime() - (d.getTimezoneOffset() * 60000)).toISOString().slice(0, -1);
+
         await fetch(`${API_URL}/meals`, {
             method: 'POST', headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ name, calories: parseInt(cal), date: dateStr, userId: currentUser.id })
@@ -435,16 +403,14 @@
     }
 
     function confirmDelete(id) { itemToDeleteId = id; document.getElementById('confirmModal').style.display = 'flex'; }
-
     async function performDelete() {
         if(!itemToDeleteId) return;
         await fetch(`${API_URL}/meals/${itemToDeleteId}`, { method: 'DELETE' });
-        closeModal('confirmModal');
-        closeModal('viewModal');
+        closeModal('confirmModal'); closeModal('viewModal');
         loadData();
     }
     
-    window.login = login; window.register = register; window.showRegister = showRegister; window.showLogin = showLogin;
+    window.showRegister = showRegister; window.showLogin = showLogin;
     init();
 </script>
 </body>
