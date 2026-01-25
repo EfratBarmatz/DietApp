@@ -10,30 +10,27 @@
     
     <style>
         :root {
-            --primary: #4F46E5; /* אינדיגו חזק */
+            --primary: #4F46E5;
             --primary-light: #818cf8;
             --bg-app: #F9FAFB;
             --text-dark: #111827;
             --text-gray: #6B7280;
-            --success-color: #10B981;
         }
 
         body {
             font-family: 'Heebo', sans-serif;
             background-color: var(--bg-app);
             color: var(--text-dark);
-            margin: 0;
-            min-height: 100vh;
+            margin: 0; min-height: 100vh;
             display: flex; flex-direction: column;
         }
 
         /* --- מסכי כניסה/הרשמה --- */
         .auth-container {
-            flex: 1;
-            display: flex; flex-direction: column; justify-content: center;
+            flex: 1; display: flex; flex-direction: column; justify-content: center;
             padding: 30px; max-width: 450px; margin: 0 auto; width: 100%;
         }
-        .auth-title { font-weight: 900; font-size: 2.5rem; color: var(--primary); margin-bottom: 10px; }
+        .auth-title { font-weight: 900; font-size: 2.5rem; color: var(--text-dark); margin-bottom: 10px; }
         .auth-subtitle { font-size: 1.1rem; color: var(--text-gray); margin-bottom: 40px; }
 
         .form-floating > .form-control { border-radius: 16px; border: 2px solid #E5E7EB; padding-right: 20px; height: calc(3.5rem + 2px); line-height: 1.25; }
@@ -47,44 +44,43 @@
         }
         .btn-main:hover { background-color: #4338CA; transform: translateY(-2px); }
 
-        /* תיקון שדה סיסמה עם עין */
         .password-wrapper { position: relative; }
-        .password-wrapper input { padding-left: 50px !important; /* מקום לאייקון */ }
+        .password-wrapper input { padding-left: 50px !important; }
         .password-toggle {
             position: absolute; left: 20px; top: 50%; transform: translateY(-50%);
             cursor: pointer; color: var(--text-gray); font-size: 1.2rem; z-index: 5;
         }
 
-        /* --- דשבורד ראשי --- */
+        /* --- דשבורד --- */
         .app-header {
             display: flex; justify-content: space-between; align-items: center;
             padding: 20px 25px; background: white;
         }
         .greeting { font-size: 1.5rem; font-weight: 800; }
-        .btn-logout { border-radius: 50px; padding: 8px 20px; font-weight: 600; border-width: 2px; }
+        
+        /* כפתור יציאה לבן ונקי */
+        .btn-logout-white {
+            background: white; border: 1px solid #E5E7EB; color: #4B5563;
+            border-radius: 50px; padding: 8px 20px; font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.2s;
+        }
+        .btn-logout-white:hover {
+            color: #ef4444; border-color: #fee2e2; background: #fef2f2;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
 
-        /* מד קלוריות עגול */
-        .progress-ring-container {
-            display: flex; justify-content: center; margin: 30px 0;
-            position: relative;
-        }
+        .progress-ring-container { display: flex; justify-content: center; margin: 30px 0; position: relative; }
         .progress-ring-circle { transition: stroke-dashoffset 0.5s ease-in-out; transform: rotate(-90deg); transform-origin: 50% 50%; }
-        .calories-overlay {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            text-align: center;
-        }
+        .calories-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
         .cal-count { font-size: 3.5rem; font-weight: 900; line-height: 1; color: var(--primary); }
 
-        /* אזור הוספה */
         .add-bar {
             background: white; padding: 20px; border-radius: 24px 24px 0 0;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.03);
-            margin-top: auto; /* דוחף למטה */
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.03); margin-top: auto;
         }
         .input-custom { border: none; background: #F3F4F6; border-radius: 12px; padding: 12px 15px; font-weight: 500; }
         .btn-add { border-radius: 12px; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; padding: 0; }
 
-        /* רשימת ארוחות */
         .meals-container { padding: 0 25px; flex: 1; overflow-y: auto; }
         .meal-card {
             background: white; border-radius: 18px; padding: 15px; margin-bottom: 15px;
@@ -97,7 +93,6 @@
             display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-left: 15px;
         }
 
-        /* כללי */
         .hidden { display: none !important; }
         .link-text { cursor: pointer; color: var(--primary); font-weight: 700; text-decoration: none; }
         .error-msg { background: #FEE2E2; color: #991B1B; padding: 12px; border-radius: 12px; margin-bottom: 20px; font-weight: 500; display: none; }
@@ -107,8 +102,8 @@
 
 <div id="loginScreen" class="auth-container">
     <div>
-        <h1 class="auth-title">שובך לשלום! 👋</h1>
-        <p class="auth-subtitle">הזן פרטים כדי להמשיך ביומן</p>
+        <h1 class="auth-title">ברוכים הבאים 🍎</h1>
+        <p class="auth-subtitle">המסע שלך לאורח חיים בריא מתחיל כאן</p>
     </div>
     
     <div id="loginError" class="error-msg"></div>
@@ -127,15 +122,15 @@
     <button onclick="login()" class="btn-main mb-4">כניסה למערכת</button>
     
     <div class="text-center">
-        <span class="text-muted">עדיין אין לך משתמש?</span>
-        <span onclick="showRegister()" class="link-text ms-2">צור חשבון עכשיו</span>
+        <span class="text-muted">חדש כאן?</span>
+        <span onclick="showRegister()" class="link-text ms-2">צור חשבון בחינם</span>
     </div>
 </div>
 
 <div id="registerScreen" class="auth-container hidden">
     <div>
-        <h1 class="auth-title">יצירת חשבון 🚀</h1>
-        <p class="auth-subtitle">הצטרף למהפכת הבריאות שלנו</p>
+        <h1 class="auth-title">יצירת חשבון ✨</h1>
+        <p class="auth-subtitle">הצטרפו לקהילה הבריאה שלנו</p>
     </div>
     
     <div id="regError" class="error-msg"></div>
@@ -165,7 +160,7 @@
             <div class="text-muted small">היום, <span id="currentDate"></span></div>
             <div class="greeting">היי, <span id="userNameSpan">אלוף</span>!</div>
         </div>
-        <button onclick="logout()" class="btn btn-outline-danger btn-logout">
+        <button onclick="logout()" class="btn btn-logout-white">
             <i class="bi bi-box-arrow-right me-1"></i> יציאה
         </button>
     </div>
@@ -174,23 +169,21 @@
         <svg class="progress-ring" width="220" height="220">
             <circle class="progress-ring-circle-bg" stroke="#E5E7EB" stroke-width="15" fill="transparent" r="90" cx="110" cy="110"/>
             <circle class="progress-ring-circle" id="calProgress" stroke="var(--primary)" stroke-width="15" stroke-linecap="round" fill="transparent" r="90" cx="110" cy="110"
-                    stroke-dasharray="565.48" stroke-dashoffset="565.48"/> </svg>
+                    stroke-dasharray="565.48" stroke-dashoffset="565.48"/>
+        </svg>
         <div class="calories-overlay">
             <div class="cal-count" id="totalCalories">0</div>
             <div class="text-muted">קלוריות היום</div>
         </div>
     </div>
 
-    <div class="meals-container" id="mealsList">
-        </div>
+    <div class="meals-container" id="mealsList"></div>
 
     <div class="add-bar">
         <div class="d-flex gap-2">
             <input type="text" id="foodName" class="input-custom flex-grow-1" placeholder="מה אכלת עכשיו?">
             <input type="number" id="foodCal" class="input-custom" placeholder="קל'" style="width: 80px;">
-            <button onclick="addMeal()" class="btn btn-main btn-add">
-                <i class="bi bi-plus-lg fs-4"></i>
-            </button>
+            <button onclick="addMeal()" class="btn btn-main btn-add"><i class="bi bi-plus-lg fs-4"></i></button>
         </div>
     </div>
 </div>
@@ -199,10 +192,8 @@
     const API_URL = '/api';
     let currentUser = null;
 
-    // עדכון תאריך
     document.getElementById('currentDate').innerText = new Date().toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long' });
 
-    // פונקציה להצגת סיסמה (תוקנה)
     function togglePass(inputId, icon) {
         const input = document.getElementById(inputId);
         input.type = input.type === "password" ? "text" : "password";
@@ -250,34 +241,30 @@
 
     function logout() { localStorage.removeItem('dietUser'); currentUser = null; showLogin(); }
 
-    // פונקציה לחישוב אייקון לפי שעה
     function getMealIcon(dateStr) {
         const hour = new Date(dateStr).getHours();
-        if (hour >= 5 && hour < 12) return 'bi-sunrise'; // בוקר
-        if (hour >= 12 && hour < 18) return 'bi-sun'; // צהריים
-        if (hour >= 18 && hour < 22) return 'bi-sunset'; // ערב
-        return 'bi-moon-stars'; // לילה
+        if (hour >= 5 && hour < 12) return 'bi-sunrise';
+        if (hour >= 12 && hour < 18) return 'bi-sun';
+        if (hour >= 18 && hour < 22) return 'bi-sunset';
+        return 'bi-moon-stars';
     }
 
     async function loadData() {
         if (!currentUser) return;
-        document.getElementById('userNameSpan').innerText = currentUser.email.split('@')[0]; // הצגת שם משתמש מהמייל
+        document.getElementById('userNameSpan').innerText = currentUser.email.split('@')[0];
 
         try {
-            // טעינת סטטיסטיקה ועדכון המד העגול
             const resStats = await fetch(`${API_URL}/stats?userId=${currentUser.id}`);
             const dataStats = await resStats.json();
             const total = dataStats.dailyCalories || 0;
             document.getElementById('totalCalories').innerText = total;
             
-            // חישוב התקדמות המעגל (בהנחה שהיעד הוא 2000 קלוריות)
             const target = 2000; 
             const percent = Math.min((total / target) * 100, 100);
             const circle = document.getElementById('calProgress');
             const circumference = 565.48;
             const offset = circumference - (percent / 100) * circumference;
             circle.style.strokeDashoffset = offset;
-
         } catch(e) {}
 
         try {
