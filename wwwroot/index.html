@@ -3,282 +3,281 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Diet App Pro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>My Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     
     <style>
         :root {
-            --glass-bg: rgba(255, 255, 255, 0.85);
-            --primary-grad: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --accent-color: #764ba2;
+            --primary: #4F46E5; /* אינדיגו חזק */
+            --primary-light: #818cf8;
+            --bg-app: #F9FAFB;
+            --text-dark: #111827;
+            --text-gray: #6B7280;
+            --success-color: #10B981;
         }
 
         body {
-            font-family: 'Rubik', sans-serif;
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
+            font-family: 'Heebo', sans-serif;
+            background-color: var(--bg-app);
+            color: var(--text-dark);
+            margin: 0;
             min-height: 100vh;
-            display: flex; align-items: center; justify-content: center;
-            margin: 0; overflow-x: hidden;
+            display: flex; flex-direction: column;
         }
 
-        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-
-        /* אנימציית בועות רקע */
-        .circles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: -1; padding: 0; margin: 0; }
-        .circles li { position: absolute; display: block; list-style: none; width: 20px; height: 20px; background: rgba(255, 255, 255, 0.2); animation: animate 25s linear infinite; bottom: -150px; border-radius: 50%; }
-        .circles li:nth-child(1) { left: 25%; width: 80px; height: 80px; animation-delay: 0s; }
-        .circles li:nth-child(2) { left: 10%; width: 20px; height: 20px; animation-delay: 2s; animation-duration: 12s; }
-        .circles li:nth-child(3) { left: 70%; width: 20px; height: 20px; animation-delay: 4s; }
-        @keyframes animate { 0% { transform: translateY(0) rotate(0deg); opacity: 1; border-radius: 0; } 100% { transform: translateY(-1000px) rotate(720deg); opacity: 0; border-radius: 50%; } }
-
-        /* כרטיס זכוכית */
-        .app-container { width: 100%; max-width: 480px; padding: 20px; position: relative; z-index: 10; }
-        .glass-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            border-radius: 24px; border: 1px solid rgba(255,255,255,0.5);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-            padding: 30px; animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        /* --- מסכי כניסה/הרשמה --- */
+        .auth-container {
+            flex: 1;
+            display: flex; flex-direction: column; justify-content: center;
+            padding: 30px; max-width: 450px; margin: 0 auto; width: 100%;
         }
-        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .auth-title { font-weight: 900; font-size: 2.5rem; color: var(--primary); margin-bottom: 10px; }
+        .auth-subtitle { font-size: 1.1rem; color: var(--text-gray); margin-bottom: 40px; }
 
-        /* אלמנטים ועיצוב */
-        h1 { color: #2d3748; font-weight: 800; }
-        .form-control {
-            background: rgba(255,255,255,0.6); border: 2px solid transparent; border-radius: 12px; padding: 12px;
-            transition: 0.3s;
-        }
-        .form-control:focus { background: white; border-color: #a78bfa; box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.2); }
+        .form-floating > .form-control { border-radius: 16px; border: 2px solid #E5E7EB; padding-right: 20px; height: calc(3.5rem + 2px); line-height: 1.25; }
+        .form-floating > .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); }
+        .form-floating > label { padding-right: 20px; }
         
-        .btn-wow {
-            background: var(--primary-grad); border: none; border-radius: 12px; color: white; padding: 12px;
-            font-weight: 700; width: 100%; transition: 0.3s; box-shadow: 0 5px 15px rgba(118, 75, 162, 0.4);
+        .btn-main {
+            background: var(--primary); color: white; border: none; border-radius: 16px;
+            padding: 16px; font-weight: 700; font-size: 1.1rem; width: 100%; transition: 0.2s;
+            box-shadow: 0 10px 20px -10px rgba(79, 70, 229, 0.5);
         }
-        .btn-wow:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(118, 75, 162, 0.6); }
+        .btn-main:hover { background-color: #4338CA; transform: translateY(-2px); }
 
-        /* --- עיצוב שדה סיסמה עם עין --- */
+        /* תיקון שדה סיסמה עם עין */
         .password-wrapper { position: relative; }
+        .password-wrapper input { padding-left: 50px !important; /* מקום לאייקון */ }
         .password-toggle {
-            position: absolute; left: 15px; top: 50%; transform: translateY(-50%);
-            cursor: pointer; color: #718096; z-index: 10;
-        }
-        .password-toggle:hover { color: var(--accent-color); }
-
-        /* הודעות שגיאה */
-        .error-msg {
-            background: #fee2e2; color: #b91c1c; padding: 10px; border-radius: 8px;
-            font-size: 0.9rem; margin-bottom: 15px; display: none; border-right: 4px solid #b91c1c;
+            position: absolute; left: 20px; top: 50%; transform: translateY(-50%);
+            cursor: pointer; color: var(--text-gray); font-size: 1.2rem; z-index: 5;
         }
 
-        .cal-display {
-            background: white; border-radius: 50%; width: 150px; height: 150px; margin: 0 auto 20px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        /* --- דשבורד ראשי --- */
+        .app-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 25px; background: white;
         }
-        .cal-number { font-size: 3rem; font-weight: 800; background: var(--primary-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1; }
-        
-        .meal-item { background: white; border-radius: 12px; padding: 10px 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .greeting { font-size: 1.5rem; font-weight: 800; }
+        .btn-logout { border-radius: 50px; padding: 8px 20px; font-weight: 600; border-width: 2px; }
+
+        /* מד קלוריות עגול */
+        .progress-ring-container {
+            display: flex; justify-content: center; margin: 30px 0;
+            position: relative;
+        }
+        .progress-ring-circle { transition: stroke-dashoffset 0.5s ease-in-out; transform: rotate(-90deg); transform-origin: 50% 50%; }
+        .calories-overlay {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        .cal-count { font-size: 3.5rem; font-weight: 900; line-height: 1; color: var(--primary); }
+
+        /* אזור הוספה */
+        .add-bar {
+            background: white; padding: 20px; border-radius: 24px 24px 0 0;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.03);
+            margin-top: auto; /* דוחף למטה */
+        }
+        .input-custom { border: none; background: #F3F4F6; border-radius: 12px; padding: 12px 15px; font-weight: 500; }
+        .btn-add { border-radius: 12px; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; padding: 0; }
+
+        /* רשימת ארוחות */
+        .meals-container { padding: 0 25px; flex: 1; overflow-y: auto; }
+        .meal-card {
+            background: white; border-radius: 18px; padding: 15px; margin-bottom: 15px;
+            display: flex; align-items: center; justify-content: space-between;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04); transition: 0.2s; border: 1px solid transparent;
+        }
+        .meal-card:hover { border-color: var(--primary-light); transform: translateY(-2px); }
+        .meal-icon {
+            width: 45px; height: 45px; border-radius: 12px; background: #EEF2FF; color: var(--primary);
+            display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-left: 15px;
+        }
+
+        /* כללי */
         .hidden { display: none !important; }
-        .link-text { cursor: pointer; color: #5b21b6; font-weight: 600; text-decoration: underline; }
+        .link-text { cursor: pointer; color: var(--primary); font-weight: 700; text-decoration: none; }
+        .error-msg { background: #FEE2E2; color: #991B1B; padding: 12px; border-radius: 12px; margin-bottom: 20px; font-weight: 500; display: none; }
     </style>
 </head>
 <body>
 
-<ul class="circles"><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li></ul>
-
-<div class="app-container">
+<div id="loginScreen" class="auth-container">
+    <div>
+        <h1 class="auth-title">שובך לשלום! 👋</h1>
+        <p class="auth-subtitle">הזן פרטים כדי להמשיך ביומן</p>
+    </div>
     
-    <div id="loginScreen" class="glass-card">
-        <div class="text-center mb-4">
-            <h1>ברוכים הבאים 🍎</h1>
-            <p class="text-muted">התחברו ליומן האישי</p>
-        </div>
-        
-        <div id="loginError" class="error-msg"></div>
+    <div id="loginError" class="error-msg"></div>
 
-        <div class="mb-3">
-            <input type="email" id="loginEmail" class="form-control" placeholder="המייל שלך..." dir="ltr">
-        </div>
-        
-        <div class="mb-4 password-wrapper">
-            <input type="password" id="loginPass" class="form-control" placeholder="סיסמה" dir="ltr">
-            <i class="bi bi-eye password-toggle" onclick="togglePass('loginPass', this)"></i>
-        </div>
+    <div class="form-floating mb-3">
+        <input type="email" id="loginEmail" class="form-control" placeholder="name@example.com" dir="ltr">
+        <label>כתובת אימייל</label>
+    </div>
+    
+    <div class="form-floating mb-4 password-wrapper">
+        <input type="password" id="loginPass" class="form-control" placeholder="Password" dir="ltr">
+        <label>הסיסמה הסודית...</label>
+        <i class="bi bi-eye password-toggle" onclick="togglePass('loginPass', this)"></i>
+    </div>
 
-        <button onclick="login()" class="btn-wow mb-3">כניסה למערכת</button>
-        <div class="text-center">
-            <span class="text-muted">אין חשבון?</span>
-            <span onclick="showRegister()" class="link-text">הרשמה בחינם</span>
+    <button onclick="login()" class="btn-main mb-4">כניסה למערכת</button>
+    
+    <div class="text-center">
+        <span class="text-muted">עדיין אין לך משתמש?</span>
+        <span onclick="showRegister()" class="link-text ms-2">צור חשבון עכשיו</span>
+    </div>
+</div>
+
+<div id="registerScreen" class="auth-container hidden">
+    <div>
+        <h1 class="auth-title">יצירת חשבון 🚀</h1>
+        <p class="auth-subtitle">הצטרף למהפכת הבריאות שלנו</p>
+    </div>
+    
+    <div id="regError" class="error-msg"></div>
+
+    <div class="form-floating mb-3">
+        <input type="email" id="regEmail" class="form-control" placeholder="name@example.com" dir="ltr">
+        <label>כתובת אימייל</label>
+    </div>
+    
+    <div class="form-floating mb-4 password-wrapper">
+        <input type="password" id="regPass" class="form-control" placeholder="Password" dir="ltr">
+        <label>סיסמה (8+ תווים, אות ומספר)</label>
+        <i class="bi bi-eye password-toggle" onclick="togglePass('regPass', this)"></i>
+    </div>
+
+    <button onclick="register()" class="btn-main mb-4">הרשמה והתחלת מסע</button>
+    
+    <div class="text-center">
+        <span class="text-muted">כבר יש לך חשבון?</span>
+        <span onclick="showLogin()" class="link-text ms-2">התחבר כאן</span>
+    </div>
+</div>
+
+<div id="appScreen" class="hidden" style="min-height: 100vh; display: flex; flex-direction: column;">
+    <div class="app-header">
+        <div>
+            <div class="text-muted small">היום, <span id="currentDate"></span></div>
+            <div class="greeting">היי, <span id="userNameSpan">אלוף</span>!</div>
+        </div>
+        <button onclick="logout()" class="btn btn-outline-danger btn-logout">
+            <i class="bi bi-box-arrow-right me-1"></i> יציאה
+        </button>
+    </div>
+
+    <div class="progress-ring-container">
+        <svg class="progress-ring" width="220" height="220">
+            <circle class="progress-ring-circle-bg" stroke="#E5E7EB" stroke-width="15" fill="transparent" r="90" cx="110" cy="110"/>
+            <circle class="progress-ring-circle" id="calProgress" stroke="var(--primary)" stroke-width="15" stroke-linecap="round" fill="transparent" r="90" cx="110" cy="110"
+                    stroke-dasharray="565.48" stroke-dashoffset="565.48"/> </svg>
+        <div class="calories-overlay">
+            <div class="cal-count" id="totalCalories">0</div>
+            <div class="text-muted">קלוריות היום</div>
         </div>
     </div>
 
-    <div id="registerScreen" class="glass-card hidden">
-        <div class="text-center mb-4">
-            <h1>יצירת חשבון ✨</h1>
-        </div>
-        
-        <div id="regError" class="error-msg"></div>
-
-        <div class="mb-3">
-            <input type="email" id="regEmail" class="form-control" placeholder="אימייל" dir="ltr">
-        </div>
-        
-        <div class="mb-4 password-wrapper">
-            <input type="password" id="regPass" class="form-control" placeholder="סיסמה (8 תווים, אות ומספר)" dir="ltr">
-            <i class="bi bi-eye password-toggle" onclick="togglePass('regPass', this)"></i>
+    <div class="meals-container" id="mealsList">
         </div>
 
-        <button onclick="register()" class="btn-wow mb-3">הרשמה</button>
-        <div class="text-center">
-            <span onclick="showLogin()" class="link-text">חזרה לכניסה</span>
+    <div class="add-bar">
+        <div class="d-flex gap-2">
+            <input type="text" id="foodName" class="input-custom flex-grow-1" placeholder="מה אכלת עכשיו?">
+            <input type="number" id="foodCal" class="input-custom" placeholder="קל'" style="width: 80px;">
+            <button onclick="addMeal()" class="btn btn-main btn-add">
+                <i class="bi bi-plus-lg fs-4"></i>
+            </button>
         </div>
     </div>
-
-    <div id="appScreen" class="glass-card hidden">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="m-0 fw-bold">היומן שלי</h5>
-            <button onclick="logout()" class="btn btn-sm btn-outline-danger">יציאה</button>
-        </div>
-
-        <div class="cal-display">
-            <span id="totalCalories" class="cal-number">0</span>
-            <span class="text-muted small">קלוריות</span>
-        </div>
-
-        <div class="d-flex gap-2 mb-4">
-            <input type="text" id="foodName" class="form-control" placeholder="מה אכלת?">
-            <input type="number" id="foodCal" class="form-control" placeholder="קל'" style="width: 80px;">
-            <button onclick="addMeal()" class="btn-wow" style="width: auto;">+</button>
-        </div>
-
-        <div id="mealsList" style="max-height: 300px; overflow-y: auto;"></div>
-    </div>
-
 </div>
 
 <script>
     const API_URL = '/api';
     let currentUser = null;
 
-    // פונקציה להצגת/הסתרת סיסמה
+    // עדכון תאריך
+    document.getElementById('currentDate').innerText = new Date().toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long' });
+
+    // פונקציה להצגת סיסמה (תוקנה)
     function togglePass(inputId, icon) {
         const input = document.getElementById(inputId);
-        if (input.type === "password") {
-            input.type = "text";
-            icon.classList.remove("bi-eye");
-            icon.classList.add("bi-eye-slash");
-        } else {
-            input.type = "password";
-            icon.classList.remove("bi-eye-slash");
-            icon.classList.add("bi-eye");
-        }
+        input.type = input.type === "password" ? "text" : "password";
+        icon.classList.toggle("bi-eye");
+        icon.classList.toggle("bi-eye-slash");
     }
 
-    function showError(elementId, msg) {
-        const el = document.getElementById(elementId);
-        el.innerText = msg;
-        el.style.display = 'block';
-    }
-
-    function clearErrors() {
-        document.getElementById('loginError').style.display = 'none';
-        document.getElementById('regError').style.display = 'none';
-    }
+    function showError(elementId, msg) { const el = document.getElementById(elementId); el.innerText = msg; el.style.display = 'block'; }
+    function clearErrors() { document.getElementById('loginError').style.display = 'none'; document.getElementById('regError').style.display = 'none'; }
 
     function init() {
-        try {
-            const savedUser = localStorage.getItem('dietUser');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                showApp();
-            } else {
-                showLogin();
-            }
-        } catch (e) { showLogin(); }
+        const savedUser = localStorage.getItem('dietUser');
+        if (savedUser) { currentUser = JSON.parse(savedUser); showApp(); } else { showLogin(); }
     }
 
     function showLogin() { clearErrors(); hideAll(); document.getElementById('loginScreen').classList.remove('hidden'); }
     function showRegister() { clearErrors(); hideAll(); document.getElementById('registerScreen').classList.remove('hidden'); }
     function showApp() { hideAll(); document.getElementById('appScreen').classList.remove('hidden'); loadData(); }
-    
-    function hideAll() {
-        document.getElementById('loginScreen').classList.add('hidden');
-        document.getElementById('registerScreen').classList.add('hidden');
-        document.getElementById('appScreen').classList.add('hidden');
-    }
+    function hideAll() { document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('registerScreen').classList.add('hidden'); document.getElementById('appScreen').classList.add('hidden'); }
 
     async function register() {
         clearErrors();
-        const email = document.getElementById('regEmail').value;
-        const pass = document.getElementById('regPass').value;
-        
-        if(!email || !pass) {
-            showError('regError', 'נא למלא את כל השדות');
-            return;
-        }
-
+        const email = document.getElementById('regEmail').value; const pass = document.getElementById('regPass').value;
+        if(!email || !pass) return showError('regError', 'נא למלא את כל השדות');
         try {
-            const res = await fetch(`${API_URL}/auth/register`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ email, password: pass })
-            });
-            
-            if (res.ok) {
-                alert('נרשמת בהצלחה! אפשר להתחבר.');
-                showLogin();
-            } else {
-                const txt = await res.text();
-                showError('regError', txt.replace(/"/g, ''));
-            }
+            const res = await fetch(`${API_URL}/auth/register`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ email, password: pass }) });
+            if (res.ok) { alert('נרשמת בהצלחה!'); showLogin(); } else { showError('regError', await res.text()); }
         } catch(e) { showError('regError', 'שגיאת תקשורת'); }
     }
 
     async function login() {
         clearErrors();
-        const email = document.getElementById('loginEmail').value;
-        const pass = document.getElementById('loginPass').value;
-
-        if(!email || !pass) {
-            showError('loginError', 'נא למלא פרטים');
-            return;
-        }
-
+        const email = document.getElementById('loginEmail').value; const pass = document.getElementById('loginPass').value;
+        if(!email || !pass) return showError('loginError', 'נא למלא פרטים');
         try {
-            const res = await fetch(`${API_URL}/auth/login`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ email, password: pass })
-            });
-            
+            const res = await fetch(`${API_URL}/auth/login`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ email, password: pass }) });
             if (res.ok) {
                 const data = await res.json();
                 currentUser = { id: data.userId, email: data.email };
                 localStorage.setItem('dietUser', JSON.stringify(currentUser));
                 showApp();
-            } else {
-                const txt = await res.text();
-                showError('loginError', txt.includes('error') ? 'שגיאה בהתחברות' : 'שם משתמש או סיסמה שגויים');
-            }
+            } else { showError('loginError', 'פרטים שגויים'); }
         } catch(e) { showError('loginError', 'שגיאת תקשורת'); }
     }
 
-    function logout() {
-        localStorage.removeItem('dietUser');
-        currentUser = null;
-        showLogin();
+    function logout() { localStorage.removeItem('dietUser'); currentUser = null; showLogin(); }
+
+    // פונקציה לחישוב אייקון לפי שעה
+    function getMealIcon(dateStr) {
+        const hour = new Date(dateStr).getHours();
+        if (hour >= 5 && hour < 12) return 'bi-sunrise'; // בוקר
+        if (hour >= 12 && hour < 18) return 'bi-sun'; // צהריים
+        if (hour >= 18 && hour < 22) return 'bi-sunset'; // ערב
+        return 'bi-moon-stars'; // לילה
     }
 
     async function loadData() {
         if (!currentUser) return;
+        document.getElementById('userNameSpan').innerText = currentUser.email.split('@')[0]; // הצגת שם משתמש מהמייל
+
         try {
+            // טעינת סטטיסטיקה ועדכון המד העגול
             const resStats = await fetch(`${API_URL}/stats?userId=${currentUser.id}`);
             const dataStats = await resStats.json();
-            document.getElementById('totalCalories').innerText = dataStats.dailyCalories || 0;
+            const total = dataStats.dailyCalories || 0;
+            document.getElementById('totalCalories').innerText = total;
+            
+            // חישוב התקדמות המעגל (בהנחה שהיעד הוא 2000 קלוריות)
+            const target = 2000; 
+            const percent = Math.min((total / target) * 100, 100);
+            const circle = document.getElementById('calProgress');
+            const circumference = 565.48;
+            const offset = circumference - (percent / 100) * circumference;
+            circle.style.strokeDashoffset = offset;
+
         } catch(e) {}
 
         try {
@@ -288,12 +287,19 @@
             list.innerHTML = '';
             meals.forEach(m => {
                 const time = new Date(m.date).toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit'});
+                const iconClass = getMealIcon(m.date);
                 list.innerHTML += `
-                    <div class="meal-item">
-                        <div><div class="fw-bold">${m.name}</div><small class="text-muted">${time}</small></div>
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-light text-dark border">${m.calories}</span>
-                            <i class="bi bi-trash text-danger" style="cursor:pointer" onclick="deleteMeal(${m.id})"></i>
+                    <div class="meal-card">
+                        <div class="d-flex align-items-center">
+                            <div class="meal-icon"><i class="bi ${iconClass}"></i></div>
+                            <div>
+                                <div class="fw-bold" style="font-size: 1.1rem;">${m.name}</div>
+                                <small class="text-muted">${time}</small>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="fw-bold text-primary" style="font-size: 1.2rem;">${m.calories} <small style="font-size:0.8rem">קל'</small></span>
+                            <i class="bi bi-trash3 text-danger opacity-50 hover-danger" style="cursor:pointer; font-size: 1.2rem;" onclick="deleteMeal(${m.id})"></i>
                         </div>
                     </div>`;
             });
@@ -304,29 +310,19 @@
         const name = document.getElementById('foodName');
         const cal = document.getElementById('foodCal');
         if(!name.value || !cal.value) return;
-
         const localTime = (new Date(new Date() - new Date().getTimezoneOffset() * 60000)).toISOString().slice(0, -1);
-
         try {
-            await fetch(`${API_URL}/meals`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ name: name.value, calories: parseInt(cal.value), date: localTime, userId: currentUser.id })
-            });
-            name.value = ''; cal.value = '';
-            loadData();
-        } catch(e) { alert('תקלה בשמירה'); }
+            await fetch(`${API_URL}/meals`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ name: name.value, calories: parseInt(cal.value), date: localTime, userId: currentUser.id }) });
+            name.value = ''; cal.value = ''; loadData();
+        } catch(e) {}
     }
 
     async function deleteMeal(id) {
-        if(!confirm('למחוק?')) return;
+        if(!confirm('למחוק את הארוחה?')) return;
         await fetch(`${API_URL}/meals/${id}`, { method: 'DELETE' });
         loadData();
     }
-
-    // הפעלה ראשונית
     init();
-
 </script>
 </body>
 </html>
