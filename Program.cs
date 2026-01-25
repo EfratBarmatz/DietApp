@@ -3,18 +3,18 @@ using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// הגדרת חיבור לבסיס הנתונים
+// שינוי: קריאת משתנה סביבה כללי
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
-                       ?? Environment.GetEnvironmentVariable("MYSQL_URL");
+                       ?? Environment.GetEnvironmentVariable("DATABASE_URL");
 
+// שינוי: שימוש ב-PostgreSQL
 builder.Services.AddDbContext<DietDb>(opt => 
-    opt.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+    opt.UseNpgsql(connectionString));
 
 builder.Services.AddCors();
 
 var app = builder.Build();
 
-// יצירת טבלאות אוטומטית בעלייה
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<DietDb>();
@@ -25,13 +25,9 @@ app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
-// --- הוספת ה-API ---
-
-// 1. קבלת כל הארוחות
 app.MapGet("/api/meals", async (DietDb db) => 
     await db.Meals.OrderByDescending(m => m.Date).ToListAsync());
 
-// 2. הוספת ארוחה חדשה
 app.MapPost("/api/meals", async (DietDb db, [FromBody] Meal meal) => {
     meal.Date = DateTime.Now;
     db.Meals.Add(meal);
@@ -39,18 +35,14 @@ app.MapPost("/api/meals", async (DietDb db, [FromBody] Meal meal) => {
     return Results.Ok(meal);
 });
 
-// 3. קבלת סיכום קלוריות יומי
 app.MapGet("/api/stats", async (DietDb db) => {
     var today = DateTime.Today;
-    var calories = await db.Meals
-        .Where(m => m.Date >= today)
-        .SumAsync(m => m.Calories);
+    var calories = await db.Meals.Where(m => m.Date >= today).SumAsync(m => m.Calories);
     return Results.Ok(new { DailyCalories = calories });
 });
 
 app.Run();
 
-// --- המודלים (מבנה הנתונים) ---
 public class DietDb : DbContext {
     public DietDb(DbContextOptions<DietDb> options) : base(options) {}
     public DbSet<Meal> Meals { get; set; }
