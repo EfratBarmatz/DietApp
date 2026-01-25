@@ -107,13 +107,13 @@
         }
     }
 
-    async function addMeal() {
+   async function addMeal() {
         const nameInput = document.getElementById('foodName');
         const calInput = document.getElementById('calories');
         const btn = document.querySelector('button');
 
         if(!nameInput.value || !calInput.value) {
-            alert('נא למלא שם וקלוריות');
+            alert('נא למלא את כל השדות');
             return;
         }
 
@@ -133,10 +133,12 @@
                 await loadStats(); 
                 await loadMeals();
             } else {
-                alert('שגיאה בשמירה');
+                // השינוי: הצגת השגיאה האמיתית מהשרת
+                const errorText = await res.text(); 
+                alert('שגיאה בשמירה: ' + errorText); // <--- זה יקפוץ למסך
             }
         } catch (e) {
-            alert('שגיאה בשמירה');
+            alert('שגיאת תקשורת: ' + e.message);
         } finally {
             btn.disabled = false;
             btn.innerText = 'הוסף +';
