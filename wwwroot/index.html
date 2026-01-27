@@ -56,6 +56,7 @@
             box-shadow: 0 5px 20px rgba(192, 132, 252, 0.4); margin-top: 10px; cursor: pointer; transition: 0.2s;
         }
         .btn-glow:hover { transform: scale(1.02); filter: brightness(1.1); }
+        .btn-glow:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
         .password-wrapper { position: relative; width: 100%; }
         .password-wrapper input { 
@@ -147,7 +148,29 @@
         }
 
         .hidden { display: none !important; }
-        .error-msg { background: rgba(239, 68, 68, 0.2); color: #fca5a5; padding: 10px; border-radius: 8px; border: 1px solid #ef4444; margin-bottom: 15px; display: none; }
+        
+        .error-msg { 
+            background: rgba(239, 68, 68, 0.2); 
+            color: #fca5a5; 
+            padding: 12px; 
+            border-radius: 8px; 
+            border: 1px solid #ef4444; 
+            margin-bottom: 15px; 
+            display: none;
+            font-size: 0.95rem;
+        }
+        
+        .success-msg { 
+            background: rgba(34, 197, 94, 0.2); 
+            color: #86efac; 
+            padding: 12px; 
+            border-radius: 8px; 
+            border: 1px solid #22c55e; 
+            margin-bottom: 15px; 
+            display: none;
+            font-size: 0.95rem;
+        }
+        
         .link-btn { color: var(--color-2); cursor: pointer; font-weight: 700; text-decoration: underline; }
         .close-btn { float: left; font-size: 1.5rem; cursor: pointer; color: #94a3b8; }
         
@@ -157,6 +180,18 @@
         .modal-label { 
             color: #e2e8f0; font-size: 0.95rem; margin-bottom: 5px; display: block; font-weight: 600;
         }
+
+        .loading-spinner {
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top: 3px solid var(--color-2);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -165,12 +200,13 @@
     <h1 class="glow-text" style="font-size: 3.5rem; line-height: 1.2;">Fitness<br>Pro</h1>
     <p style="color: #94a3b8; font-size: 1.2rem; margin-bottom: 30px;">האנרגיה שלך מתחילה כאן.</p>
     <div id="loginError" class="error-msg"></div>
+    <div id="loginSuccess" class="success-msg"></div>
     <input type="email" id="loginEmail" class="input-glass" placeholder="אימייל" dir="ltr">
     <div class="password-wrapper">
         <input type="password" id="loginPass" class="input-glass" placeholder="הסיסמה הסודית..." dir="ltr">
         <i class="bi bi-eye password-toggle" onclick="togglePass('loginPass', this)"></i>
     </div>
-    <button onclick="login()" class="btn-glow">כניסה למערכת</button>
+    <button onclick="login()" class="btn-glow" id="loginBtn">כניסה למערכת</button>
     <div class="text-center mt-3"><span style="color: #94a3b8;">חדשה?</span> <span onclick="showRegister()" class="link-btn">הרשמה</span></div>
 </div>
 
@@ -178,12 +214,13 @@
     <h1 class="glow-text">הצטרפי</h1>
     <p style="color: #94a3b8; margin-bottom: 30px;">התחילי את השינוי היום.</p>
     <div id="regError" class="error-msg"></div>
+    <div id="regSuccess" class="success-msg"></div>
     <input type="email" id="regEmail" class="input-glass" placeholder="אימייל" dir="ltr">
     <div class="password-wrapper">
         <input type="password" id="regPass" class="input-glass" placeholder="סיסמה (8+ תווים)" dir="ltr">
         <i class="bi bi-eye password-toggle" onclick="togglePass('regPass', this)"></i>
     </div>
-    <button onclick="register()" class="btn-glow">יצירת חשבון</button>
+    <button onclick="register()" class="btn-glow" id="regBtn">יצירת חשבון</button>
     <div class="text-center mt-3"><span onclick="showLogin()" class="link-btn">חזרה לכניסה</span></div>
 </div>
 
@@ -209,6 +246,7 @@
             <h4 class="m-0 fw-bold text-white">הוספת ארוחה</h4>
             <i class="bi bi-x-lg close-btn" onclick="closeModal('addModal')"></i>
         </div>
+        <div id="addError" class="error-msg"></div>
         <label class="modal-label">איזו ארוחה זו?</label>
         <select id="mealType" class="input-glass mb-3" style="padding:10px;">
             <option value="morning" style="color:black">🥐 בוקר</option>
@@ -219,8 +257,8 @@
         <label class="modal-label">מה אכלת?</label>
         <input type="text" id="foodName" class="input-glass mb-3" placeholder="למשל: יוגורט">
         <label class="modal-label">קלוריות</label>
-        <input type="number" id="foodCal" class="input-glass mb-4" placeholder="0">
-        <button onclick="addMeal()" class="btn-glow">שמירה</button>
+        <input type="number" id="foodCal" class="input-glass mb-4" placeholder="0" min="1">
+        <button onclick="addMeal()" class="btn-glow" id="addMealBtn">שמירה</button>
     </div>
 </div>
 
@@ -253,13 +291,65 @@
     let itemToDeleteId = null;
     let lastKnownDate = new Date().toDateString();
 
+    // פונקציות עזר להצגת הודעות
+    function showError(elementId, message) {
+        const el = document.getElementById(elementId);
+        el.textContent = message;
+        el.style.display = 'block';
+        setTimeout(() => { el.style.display = 'none'; }, 5000);
+    }
+
+    function showSuccess(elementId, message) {
+        const el = document.getElementById(elementId);
+        el.textContent = message;
+        el.style.display = 'block';
+        setTimeout(() => { el.style.display = 'none'; }, 3000);
+    }
+
+    function hideMessages() {
+        document.querySelectorAll('.error-msg, .success-msg').forEach(el => {
+            el.style.display = 'none';
+        });
+    }
+
+    // Validation פונקציות
+    function isValidEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    }
+
+    function isValidPassword(password) {
+        return password && password.length >= 8;
+    }
+
     function togglePass(inputId, icon) {
         const input = document.getElementById(inputId);
         if (input.type === "password") {
-            input.type = "text"; icon.classList.remove("bi-eye"); icon.classList.add("bi-eye-slash");
+            input.type = "text"; 
+            icon.classList.remove("bi-eye"); 
+            icon.classList.add("bi-eye-slash");
         } else {
-            input.type = "password"; icon.classList.remove("bi-eye-slash"); icon.classList.add("bi-eye");
+            input.type = "password"; 
+            icon.classList.remove("bi-eye-slash"); 
+            icon.classList.add("bi-eye");
         }
+    }
+
+    // פונקציה חכמה לקביעת ארוחה ברירת מחדל לפי השעה
+    function getDefaultMealType() {
+        const hour = new Date().getHours();
+        
+        // 9:00-11:00 → בוקר
+        if (hour >= 9 && hour < 11) return 'morning';
+        
+        // 15:00-17:00 (3-5 אחה"צ) → צהריים
+        if (hour >= 15 && hour < 17) return 'noon';
+        
+        // 19:00-21:00 (7-9 ערב) → ערב
+        if (hour >= 19 && hour < 21) return 'evening';
+        
+        // שאר הזמן → נשנוש
+        return 'snack';
     }
 
     function init() {
@@ -270,59 +360,174 @@
                 document.getElementById('loginScreen').classList.add('hidden');
                 document.getElementById('appScreen').classList.remove('hidden');
                 loadData(); 
+                
+                // בדיקה כל דקה אם עבר יום (במקום 10 שניות)
                 setInterval(() => {
-                    if (new Date().toDateString() !== lastKnownDate) location.reload();
-                }, 10000);
+                    if (new Date().toDateString() !== lastKnownDate) {
+                        location.reload();
+                    }
+                }, 60000); // 1 דקה
             }
-        } catch(e) {}
+        } catch(e) {
+            console.error('Error initializing:', e);
+            localStorage.removeItem('dietUser');
+        }
     }
 
     async function login() {
-        const email = document.getElementById('loginEmail').value;
+        hideMessages();
+        const email = document.getElementById('loginEmail').value.trim();
         const pass = document.getElementById('loginPass').value;
-        const res = await fetch(`${API_URL}/auth/login`, {
-            method: 'POST', headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ email, password: pass })
-        });
-        if (res.ok) {
-            const data = await res.json();
-            currentUser = { id: data.userId, email: data.email };
-            localStorage.setItem('dietUser', JSON.stringify(currentUser));
-            location.reload();
+        const btn = document.getElementById('loginBtn');
+        
+        // Validation
+        if (!email || !pass) {
+            showError('loginError', 'נא למלא את כל השדות');
+            return;
+        }
+        
+        if (!isValidEmail(email)) {
+            showError('loginError', 'כתובת אימייל לא תקינה');
+            return;
+        }
+        
+        // Loading state
+        btn.disabled = true;
+        btn.innerHTML = '<span class="loading-spinner"></span>מתחבר...';
+        
+        try {
+            const res = await fetch(`${API_URL}/auth/login`, {
+                method: 'POST', 
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ email, password: pass })
+            });
+            
+            if (res.ok) {
+                const data = await res.json();
+                currentUser = { id: data.userId, email: data.email };
+                localStorage.setItem('dietUser', JSON.stringify(currentUser));
+                showSuccess('loginSuccess', 'התחברת בהצלחה!');
+                setTimeout(() => location.reload(), 1000);
+            } else {
+                const error = await res.json();
+                showError('loginError', error.message || 'שגיאה בהתחברות. אנא בדקי את הפרטים.');
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            showError('loginError', 'שגיאת רשת. אנא נסי שוב.');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = 'כניסה למערכת';
         }
     }
 
     async function register() {
-        const email = document.getElementById('regEmail').value;
+        hideMessages();
+        const email = document.getElementById('regEmail').value.trim();
         const pass = document.getElementById('regPass').value;
-        await fetch(`${API_URL}/auth/register`, {
-            method: 'POST', headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ email, password: pass })
-        });
-        showLogin();
+        const btn = document.getElementById('regBtn');
+        
+        // Validation
+        if (!email || !pass) {
+            showError('regError', 'נא למלא את כל השדות');
+            return;
+        }
+        
+        if (!isValidEmail(email)) {
+            showError('regError', 'כתובת אימייל לא תקינה');
+            return;
+        }
+        
+        if (!isValidPassword(pass)) {
+            showError('regError', 'הסיסמה חייבת להכיל לפחות 8 תווים');
+            return;
+        }
+        
+        // Loading state
+        btn.disabled = true;
+        btn.innerHTML = '<span class="loading-spinner"></span>יוצר חשבון...';
+        
+        try {
+            const res = await fetch(`${API_URL}/auth/register`, {
+                method: 'POST', 
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ email, password: pass })
+            });
+            
+            if (res.ok) {
+                showSuccess('regSuccess', 'החשבון נוצר בהצלחה! מעביר להתחברות...');
+                setTimeout(() => showLogin(), 2000);
+            } else {
+                const error = await res.json();
+                showError('regError', error.message || 'שגיאה ביצירת חשבון. אולי המשתמש כבר קיים?');
+            }
+        } catch (error) {
+            console.error('Register error:', error);
+            showError('regError', 'שגיאת רשת. אנא נסי שוב.');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = 'יצירת חשבון';
+        }
     }
 
-    function showLogin() { hideAll(); document.getElementById('loginScreen').classList.remove('hidden'); }
-    function showRegister() { hideAll(); document.getElementById('registerScreen').classList.remove('hidden'); }
-    function hideAll() { document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('registerScreen').classList.add('hidden'); document.getElementById('appScreen').classList.add('hidden'); }
-    function logout() { localStorage.removeItem('dietUser'); location.reload(); }
+    function showLogin() { 
+        hideAll(); 
+        hideMessages();
+        document.getElementById('loginScreen').classList.remove('hidden'); 
+    }
     
-    // ניקוי טופס בסגירה ידנית
-    function closeModal(id) { 
-        document.getElementById(id).style.display = 'none'; 
-        if(id === 'addModal') {
-            document.getElementById('foodName').value = '';
-            document.getElementById('foodCal').value = '';
+    function showRegister() { 
+        hideAll(); 
+        hideMessages();
+        document.getElementById('registerScreen').classList.remove('hidden'); 
+    }
+    
+    function hideAll() { 
+        document.getElementById('loginScreen').classList.add('hidden'); 
+        document.getElementById('registerScreen').classList.add('hidden'); 
+        document.getElementById('appScreen').classList.add('hidden'); 
+    }
+    
+    function logout() { 
+        if (confirm('בטוחה שאת רוצה להתנתק?')) {
+            localStorage.removeItem('dietUser'); 
+            location.reload(); 
         }
     }
     
-    function openAddModal() { document.getElementById('addModal').style.display = 'flex'; }
+    function closeModal(id) { 
+        document.getElementById(id).style.display = 'none'; 
+        
+        // ניקוי טופס אם סוגרים את מודל ההוספה
+        if(id === 'addModal') {
+            document.getElementById('foodName').value = '';
+            document.getElementById('foodCal').value = '';
+            hideMessages();
+        }
+    }
+    
+    function openAddModal() { 
+        // קביעת ברירת מחדל חכמה לפי השעה
+        document.getElementById('mealType').value = getDefaultMealType();
+        document.getElementById('addModal').style.display = 'flex'; 
+    }
 
     async function loadData() {
         if (!currentUser) return;
-        const resMeals = await fetch(`${API_URL}/meals?userId=${currentUser.id}`);
-        allMeals = await resMeals.json();
-        renderGrid();
+        
+        try {
+            const resMeals = await fetch(`${API_URL}/meals?userId=${currentUser.id}`);
+            
+            if (!resMeals.ok) {
+                throw new Error('Failed to load meals');
+            }
+            
+            allMeals = await resMeals.json();
+            renderGrid();
+        } catch (error) {
+            console.error('Error loading data:', error);
+            // אפשר להציג הודעת שגיאה למשתמש כאן
+        }
     }
 
     function renderGrid() {
@@ -340,7 +545,8 @@
         todaysMeals.forEach(m => {
             const h = new Date(m.date).getHours();
             let key = 'snack';
-            // התאמה ללוגיקה של השרת כדי שיציג בקופסה הנכונה
+            
+            // סיווג לפי שעה
             if (h === 9) key = 'morning'; 
             else if (h === 14) key = 'noon'; 
             else if (h === 20) key = 'evening';
@@ -366,7 +572,13 @@
     }
 
     function showCategoryDetails(key) {
-        const titles = { morning: 'ארוחת בוקר', noon: 'ארוחת צהריים', evening: 'ארוחת ערב', snack: 'נשנושים' };
+        const titles = { 
+            morning: 'ארוחת בוקר', 
+            noon: 'ארוחת צהריים', 
+            evening: 'ארוחת ערב', 
+            snack: 'נשנושים' 
+        };
+        
         document.getElementById('viewTitle').innerText = titles[key];
         const todayStr = new Date().toDateString();
         const items = allMeals.filter(m => {
@@ -379,65 +591,124 @@
         });
 
         const list = document.getElementById('itemsList');
-        list.innerHTML = items.length ? '' : 'ריק';
-        items.forEach(m => {
-            const time = new Date(m.date).toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit'});
-            list.innerHTML += `
-                <div class="item-row">
-                    <div><b>${m.name}</b><br><small>${time}</small></div>
-                    <div class="d-flex align-items-center gap-2">
-                        <span>${m.calories}</span>
-                        <i class="bi bi-trash text-danger" style="cursor:pointer" onclick="confirmDelete(${m.id})"></i>
-                    </div>
-                </div>`;
-        });
+        
+        if (items.length === 0) {
+            list.innerHTML = '<p style="text-align:center; color:#94a3b8; padding:20px;">אין פריטים עדיין</p>';
+        } else {
+            list.innerHTML = '';
+            items.forEach(m => {
+                const time = new Date(m.date).toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit'});
+                list.innerHTML += `
+                    <div class="item-row">
+                        <div><b>${m.name}</b><br><small style="color:#94a3b8">${time}</small></div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span style="font-weight:700">${m.calories}</span>
+                            <i class="bi bi-trash text-danger" style="cursor:pointer" onclick="confirmDelete(${m.id})"></i>
+                        </div>
+                    </div>`;
+            });
+        }
+        
         document.getElementById('viewModal').style.display = 'flex';
     }
 
     async function addMeal() {
+        hideMessages();
+        
         const type = document.getElementById('mealType').value;
         const nameInput = document.getElementById('foodName');
         const calInput = document.getElementById('foodCal');
+        const btn = document.getElementById('addMealBtn');
         
-        if(!nameInput.value || !calInput.value) return;
+        const name = nameInput.value.trim();
+        const calories = parseInt(calInput.value);
+        
+        // Validation
+        if (!name) {
+            showError('addError', 'נא להזין שם מאכל');
+            nameInput.focus();
+            return;
+        }
+        
+        if (!calories || calories < 1) {
+            showError('addError', 'נא להזין מספר קלוריות תקין');
+            calInput.focus();
+            return;
+        }
 
-        let d = new Date(); // שעה נוכחית אמיתית
+        // קביעת השעה לפי סוג הארוחה שנבחר
+        let d = new Date(); // תאריך ושעה נוכחיים
         
-        // הגדרת השעה לפי הקטגוריה כדי שהשרת ידע לשייך נכון
-        if(type === 'morning') d.setHours(9,0,0);
-        else if(type === 'noon') d.setHours(14,0,0);
-        else if(type === 'evening') d.setHours(20,0,0);
-        else d.setHours(23,0,0); // נשנוש
+        if(type === 'morning') d.setHours(9, 0, 0, 0);
+        else if(type === 'noon') d.setHours(14, 0, 0, 0);
+        else if(type === 'evening') d.setHours(20, 0, 0, 0);
+        else d.setHours(23, 0, 0, 0); // נשנוש
 
         const dateStr = new Date(d.getTime() - (d.getTimezoneOffset() * 60000)).toISOString().slice(0, -1);
 
-        await fetch(`${API_URL}/meals`, {
-            method: 'POST', headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ 
-                name: nameInput.value, 
-                calories: parseInt(calInput.value), 
-                date: dateStr, 
-                userId: currentUser.id 
-            })
-        });
+        // Loading state
+        btn.disabled = true;
+        btn.innerHTML = '<span class="loading-spinner"></span>שומר...';
 
-        // ניקוי הטופס לאחר הצלחה
-        nameInput.value = '';
-        calInput.value = '';
-        
-        closeModal('addModal');
-        loadData();
+        try {
+            const res = await fetch(`${API_URL}/meals`, {
+                method: 'POST', 
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ 
+                    name: name, 
+                    calories: calories, 
+                    date: dateStr, 
+                    userId: currentUser.id 
+                })
+            });
+
+            if (res.ok) {
+                // ניקוי הטופס
+                nameInput.value = '';
+                calInput.value = '';
+                
+                closeModal('addModal');
+                await loadData(); // רענון הנתונים
+            } else {
+                const error = await res.json();
+                showError('addError', error.message || 'שגיאה בשמירת הארוחה');
+            }
+        } catch (error) {
+            console.error('Error adding meal:', error);
+            showError('addError', 'שגיאת רשת. אנא נסי שוב.');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = 'שמירה';
+        }
     }
 
-    function confirmDelete(id) { itemToDeleteId = id; document.getElementById('confirmModal').style.display = 'flex'; }
-    async function performDelete() {
-        if(!itemToDeleteId) return;
-        await fetch(`${API_URL}/meals/${itemToDeleteId}`, { method: 'DELETE' });
-        closeModal('confirmModal'); closeModal('viewModal');
-        loadData();
+    function confirmDelete(id) { 
+        itemToDeleteId = id; 
+        document.getElementById('confirmModal').style.display = 'flex'; 
     }
     
-    window.showRegister = showRegister; window.showLogin = showLogin;
+    async function performDelete() {
+        if(!itemToDeleteId) return;
+        
+        try {
+            const res = await fetch(`${API_URL}/meals/${itemToDeleteId}`, { 
+                method: 'DELETE' 
+            });
+            
+            if (res.ok) {
+                closeModal('confirmModal'); 
+                closeModal('viewModal');
+                await loadData(); // רענון הנתונים
+            } else {
+                console.error('Failed to delete meal');
+            }
+        } catch (error) {
+            console.error('Error deleting meal:', error);
+        }
+    }
+    
+    window.showRegister = showRegister; 
+    window.showLogin = showLogin;
     init();
 </script>
 </body>
