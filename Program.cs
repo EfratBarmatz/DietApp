@@ -61,16 +61,21 @@ using (var scope = app.Services.CreateScope()) {
                     ""Calories"" integer,
                     ""Date"" timestamp without time zone,
                     ""UserId"" integer DEFAULT 0, 
+                    ""MealType"" text, -- הוספתי את זה כאן ליצירה הראשונית
                     CONSTRAINT ""PK_Meals"" PRIMARY KEY (""Id"")
                 );
             ");
 
-            // --- התיקון הקריטי: הוספת עמודת UserId אם היא חסרה ---
-            // השורה הזו מתקנת את השגיאה 500!
+            // --- תיקונים: הוספת עמודות חסרות ---
             try {
                 db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Meals"" ADD COLUMN IF NOT EXISTS ""UserId"" integer DEFAULT 0;");
-            } catch { /* מתעלמים אם כבר קיים */ }
-            // ---------------------------------------------------
+            } catch { }
+
+            // התיקון החדש: מוסיף את עמודת MealType אם היא לא קיימת
+            try {
+                db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Meals"" ADD COLUMN IF NOT EXISTS ""MealType"" text;");
+            } catch { }
+            // -------------------------------------
 
         } catch (Exception ex) { Console.WriteLine("DB Init Error: " + ex.Message); }
     }
@@ -148,6 +153,9 @@ app.MapPost("/api/meals", async (DietDb db, [FromBody] Meal meal) => {
     // אם לא נשלח תאריך, נשתמש בזמן השרת
     if (meal.Date == default) meal.Date = DateTime.UtcNow.AddHours(3);
 
+    // אם לא נשלח סוג ארוחה, נגדיר כנשנוש כברירת מחדל
+    if (string.IsNullOrEmpty(meal.MealType)) meal.MealType = "snack";
+
     db.Meals.Add(meal);
     await db.SaveChangesAsync();
     return Results.Ok(meal);
@@ -196,6 +204,7 @@ public class Meal {
     public int Calories { get; set; }
     public DateTime Date { get; set; }
     public int UserId { get; set; }
+    public string MealType { get; set; } // השדה החדש שהוספתי!
 }
 
 public class UserRegisterDto {
