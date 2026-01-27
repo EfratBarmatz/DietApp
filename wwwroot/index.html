@@ -641,83 +641,68 @@
         document.getElementById('viewModal').style.display = 'flex';
     }
 
-    async function addMeal() {
-        hideMessages();
-        
+   async function addMeal() {
+        const name = document.getElementById('foodName').value;
+        const calories = parseInt(document.getElementById('foodCal').value);
         const type = document.getElementById('mealType').value;
-        const nameInput = document.getElementById('foodName');
-        const calInput = document.getElementById('foodCal');
-        const btn = document.getElementById('addMealBtn');
-        
-        const name = nameInput.value.trim();
-        const calories = parseInt(calInput.value);
-        
-        // Validation
-        if (!name) {
-            showError('addError', 'נא להזין שם מאכל');
-            nameInput.focus();
-            return;
-        }
-        
-        if (!calories || calories < 1) {
-            showError('addError', 'נא להזין מספר קלוריות תקין');
-            calInput.focus();
+        const btn = document.getElementById('addBtn');
+
+        if (!name || !calories) {
+            // אם יש לך אלמנט להודעת שגיאה
+            const errorDiv = document.getElementById('addError');
+            if(errorDiv) {
+                errorDiv.innerText = 'מלאי את כל השדות';
+                errorDiv.style.display = 'block';
+            }
             return;
         }
 
-        let d = new Date(); // תאריך ושעה נוכחיים
+        btn.disabled = true; 
+        // שמירה על האייקון המסתובב אם קיים, או סתם טקסט
+        const originalBtnText = btn.innerHTML;
+        btn.innerHTML = '<span class="loading-spinner"></span> שומר...';
+
+        let date = new Date();
         
         // בדיקה אם המשתמש בחר שעה ידנית
-        const isCustomTime = document.querySelector('input[name="timeOption"][value="custom"]').checked;
-        
-        if (isCustomTime) {
-            const customTime = document.getElementById('customTime').value;
-            if (customTime) {
-                const [hours, minutes] = customTime.split(':');
-                d.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-            } else {
-                showError('addError', 'נא לבחור שעה');
-                return;
-            }
+        const customTimeInput = document.getElementById('customTime');
+        // בודקים אם האינפוט גלוי (כלומר המשתמש בחר "שעה אחרת")
+        if (customTimeInput && !customTimeInput.classList.contains('hidden') && customTimeInput.value) {
+            const [h, m] = customTimeInput.value.split(':');
+            date.setHours(h, m, 0, 0);
         }
-        // אחרת - השעה הנוכחית נשארת כמו שהיא
 
-        const dateStr = new Date(d.getTime() - (d.getTimezoneOffset() * 60000)).toISOString().slice(0, -1);
+        // --- התיקון הגדול נמצא כאן ---
+        // במקום החישוב המסובך שהיה קודם, אנחנו שולחים פורמט בינלאומי רגיל (ISO)
+        // השרת יקבל את זה כזמן עולמי (למשל 10:00), וכשהוא יחזיר לך את זה, 
+        // הדפדפן ימיר את זה אוטומטית חזרה לשעון ישראל (12:00)
+        const dateStr = date.toISOString(); 
 
-        // Loading state
-        btn.disabled = true;
-        btn.innerHTML = '<span class="loading-spinner"></span>שומר...';
+        const mealData = { 
+            name, 
+            calories, 
+            userId: currentUser.id, 
+            date: dateStr,
+            mealType: type 
+        };
 
         try {
             const res = await fetch(`${API_URL}/meals`, {
-                method: 'POST', 
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ 
-                    name: name, 
-                    calories: calories, 
-                    date: dateStr, // השעה האמיתית!
-                    userId: currentUser.id,
-                    mealType: type // הקטגוריה שנבחרה!
-                })
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(mealData)
             });
-
-            if (res.ok) {
-                // ניקוי הטופס
-                nameInput.value = '';
-                calInput.value = '';
-                
-                closeModal('addModal');
-                await loadData(); // רענון הנתונים
+            
+            if (res.ok) { 
+                closeModal('addModal'); 
+                loadData(); 
             } else {
-                const error = await res.json();
-                showError('addError', error.message || 'שגיאה בשמירת הארוחה');
+                alert('שגיאה בשמירה');
             }
-        } catch (error) {
-            console.error('Error adding meal:', error);
-            showError('addError', 'שגיאת רשת. אנא נסי שוב.');
-        } finally {
-            btn.disabled = false;
-            btn.innerHTML = 'שמירה';
+        } catch(e) {
+            console.error(e);
+        } finally { 
+            btn.disabled = false; 
+            btn.innerHTML = 'שמירה'; // מחזירים את הטקסט המקורי
         }
     }
 
