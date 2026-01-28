@@ -645,12 +645,9 @@
         const name = document.getElementById('foodName').value;
         const calories = parseInt(document.getElementById('foodCal').value);
         const type = document.getElementById('mealType').value;
-        
-        // התיקון לשגיאה: מחפשים את הכפתור לפי ה-ID שיש אצלך ב-HTML
-        const btn = document.getElementById('addMealBtn'); 
+        const btn = document.getElementById('addMealBtn'); // השם הנכון של הכפתור
 
         if (!name || !calories) {
-            // אם יש אלמנט להודעת שגיאה נציג אותו, אחרת נתעלם
             const errorDiv = document.getElementById('addError');
             if(errorDiv) {
                 errorDiv.innerText = 'מלאי את כל השדות';
@@ -659,13 +656,12 @@
             return;
         }
 
-        // הגנה מקריסה: בודקים אם הכפתור קיים לפני שנוגעים בו
         if (btn) {
             btn.disabled = true; 
             btn.innerHTML = '<span class="loading-spinner"></span> שומר...';
         }
 
-        let date = new Date();
+        let date = new Date(); // לוקח את הזמן של עכשיו (15:02)
         
         // בדיקת שעה מותאמת אישית
         const customTimeInput = document.getElementById('customTime');
@@ -674,16 +670,17 @@
             date.setHours(h, m, 0, 0);
         }
 
-        // יצירת תאריך מקומי מתוקן לשליחה
-        // הטריק: אנחנו מזיזים את הזמן אחורה לפי אזור הזמן שלך כדי שה-ISO יצא "נכון" מבחינת המספרים
-        const offsetMs = date.getTimezoneOffset() * 60 * 1000;
-        const localISOTime = new Date(date.getTime() - offsetMs).toISOString().slice(0, -1);
+        // --- התיקון: בלי חישובים מתמטיים ---
+        // פשוט שולחים את התאריך כמו שהוא בפורמט בינלאומי.
+        // המחשב ישלח "13:02" (זמן עולמי), וכשהאפליקציה תציג את זה,
+        // היא תהפוך את זה חזרה אוטומטית ל-"15:02" (זמן ישראל).
+        const dateStr = date.toISOString(); 
 
         const mealData = { 
             name, 
             calories, 
             userId: currentUser.id, 
-            date: localISOTime, // שולחים את הזמן המקומי המתוקן
+            date: dateStr, 
             mealType: type 
         };
 
@@ -702,7 +699,6 @@
         } catch(e) {
             console.error(e);
         } finally { 
-            // מחזירים את הכפתור למצב רגיל
             if (btn) {
                 btn.disabled = false; 
                 btn.innerHTML = 'שמירה';
