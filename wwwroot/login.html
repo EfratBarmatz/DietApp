@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Fitness Pro - כניסה</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css"> </head>
+<body>
+
+    <div id="loginScreen" class="auth-container">
+        <h1 class="glow-text" style="font-size: 3.5rem; line-height: 1.2;">Fitness<br>Pro</h1>
+        <p style="color: #94a3b8; font-size: 1.2rem; margin-bottom: 30px;">האנרגיה שלך מתחילה כאן.</p>
+        <div id="loginError" class="error-msg"></div>
+        <div id="loginSuccess" class="success-msg"></div>
+        
+        <input type="email" id="loginEmail" class="input-glass" placeholder="אימייל" dir="ltr">
+        <div class="password-wrapper">
+            <input type="password" id="loginPass" class="input-glass" placeholder="הסיסמה הסודית..." dir="ltr">
+            <i class="bi bi-eye password-toggle" onclick="togglePass('loginPass', this)"></i>
+        </div>
+        <button onclick="login()" class="btn-glow" id="loginBtn">כניסה למערכת</button>
+        <div class="text-center mt-3"><span style="color: #94a3b8;">חדשה?</span> <span onclick="showRegister()" class="link-btn">הרשמה</span></div>
+    </div>
+
+    <div id="registerScreen" class="auth-container hidden">
+        <h1 class="glow-text">הצטרפי</h1>
+        <p style="color: #94a3b8; margin-bottom: 30px;">התחילי את השינוי היום.</p>
+        <div id="regError" class="error-msg"></div>
+        <div id="regSuccess" class="success-msg"></div>
+        
+        <input type="email" id="regEmail" class="input-glass" placeholder="אימייל" dir="ltr">
+        <div class="password-wrapper">
+            <input type="password" id="regPass" class="input-glass" placeholder="סיסמה (8+ תווים)" dir="ltr">
+            <i class="bi bi-eye password-toggle" onclick="togglePass('regPass', this)"></i>
+        </div>
+        <button onclick="register()" class="btn-glow" id="regBtn">יצירת חשבון</button>
+        <div class="text-center mt-3"><span onclick="showLogin()" class="link-btn">חזרה לכניסה</span></div>
+    </div>
+
+    <script src="js/auth.js"></script> </body>
+</html>
