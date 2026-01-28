@@ -645,10 +645,12 @@
         const name = document.getElementById('foodName').value;
         const calories = parseInt(document.getElementById('foodCal').value);
         const type = document.getElementById('mealType').value;
-        const btn = document.getElementById('addBtn');
+        
+        // התיקון לשגיאה: מחפשים את הכפתור לפי ה-ID שיש אצלך ב-HTML
+        const btn = document.getElementById('addMealBtn'); 
 
         if (!name || !calories) {
-            // אם יש לך אלמנט להודעת שגיאה
+            // אם יש אלמנט להודעת שגיאה נציג אותו, אחרת נתעלם
             const errorDiv = document.getElementById('addError');
             if(errorDiv) {
                 errorDiv.innerText = 'מלאי את כל השדות';
@@ -657,32 +659,31 @@
             return;
         }
 
-        btn.disabled = true; 
-        // שמירה על האייקון המסתובב אם קיים, או סתם טקסט
-        const originalBtnText = btn.innerHTML;
-        btn.innerHTML = '<span class="loading-spinner"></span> שומר...';
+        // הגנה מקריסה: בודקים אם הכפתור קיים לפני שנוגעים בו
+        if (btn) {
+            btn.disabled = true; 
+            btn.innerHTML = '<span class="loading-spinner"></span> שומר...';
+        }
 
         let date = new Date();
         
-        // בדיקה אם המשתמש בחר שעה ידנית
+        // בדיקת שעה מותאמת אישית
         const customTimeInput = document.getElementById('customTime');
-        // בודקים אם האינפוט גלוי (כלומר המשתמש בחר "שעה אחרת")
-        if (customTimeInput && !customTimeInput.classList.contains('hidden') && customTimeInput.value) {
+        if (customTimeInput && customTimeInput.style.display !== 'none' && customTimeInput.value) {
             const [h, m] = customTimeInput.value.split(':');
             date.setHours(h, m, 0, 0);
         }
 
-        // --- התיקון הגדול נמצא כאן ---
-        // במקום החישוב המסובך שהיה קודם, אנחנו שולחים פורמט בינלאומי רגיל (ISO)
-        // השרת יקבל את זה כזמן עולמי (למשל 10:00), וכשהוא יחזיר לך את זה, 
-        // הדפדפן ימיר את זה אוטומטית חזרה לשעון ישראל (12:00)
-        const dateStr = date.toISOString(); 
+        // יצירת תאריך מקומי מתוקן לשליחה
+        // הטריק: אנחנו מזיזים את הזמן אחורה לפי אזור הזמן שלך כדי שה-ISO יצא "נכון" מבחינת המספרים
+        const offsetMs = date.getTimezoneOffset() * 60 * 1000;
+        const localISOTime = new Date(date.getTime() - offsetMs).toISOString().slice(0, -1);
 
         const mealData = { 
             name, 
             calories, 
             userId: currentUser.id, 
-            date: dateStr,
+            date: localISOTime, // שולחים את הזמן המקומי המתוקן
             mealType: type 
         };
 
@@ -696,13 +697,16 @@
                 closeModal('addModal'); 
                 loadData(); 
             } else {
-                alert('שגיאה בשמירה');
+                console.error('Save failed');
             }
         } catch(e) {
             console.error(e);
         } finally { 
-            btn.disabled = false; 
-            btn.innerHTML = 'שמירה'; // מחזירים את הטקסט המקורי
+            // מחזירים את הכפתור למצב רגיל
+            if (btn) {
+                btn.disabled = false; 
+                btn.innerHTML = 'שמירה';
+            }
         }
     }
 
