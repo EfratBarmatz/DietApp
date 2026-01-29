@@ -28,7 +28,7 @@ builder.Services.AddDbContext<DietDb>(opt => {
     if (!string.IsNullOrEmpty(connectionString)) opt.UseNpgsql(connectionString);
 });
 
-// 2. הוספת תמיכה ב-Controllers (זה השינוי החשוב!)
+// 2. הוספת תמיכה ב-Controllers
 builder.Services.AddControllers();
 builder.Services.AddCors();
 
@@ -39,6 +39,38 @@ app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
-app.MapControllers(); // מיפוי אוטומטי של הקבצים שיצרנו
+// ==========================================
+// אזור עדכון מסד הנתונים (התוספת החדשה)
+// ==========================================
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<DietDb>();
+    try
+    {
+        // 1. יצירת הטבלאות הבסיסיות אם הן לא קיימות
+        db.Database.EnsureCreated();
+
+        // 2. עדכון ידני לטבלת המשתמשים (הוספת העמודות החדשות אם חסרות)
+        if (!string.IsNullOrEmpty(connectionString))
+        {
+            db.Database.ExecuteSqlRaw(@"
+                ALTER TABLE ""Users"" ADD COLUMN IF NOT EXISTS ""Name"" text DEFAULT 'משתמש/ת';
+                ALTER TABLE ""Users"" ADD COLUMN IF NOT EXISTS ""Age"" integer DEFAULT 0;
+                ALTER TABLE ""Users"" ADD COLUMN IF NOT EXISTS ""Weight"" double precision DEFAULT 0;
+                ALTER TABLE ""Users"" ADD COLUMN IF NOT EXISTS ""Height"" integer DEFAULT 0;
+                ALTER TABLE ""Users"" ADD COLUMN IF NOT EXISTS ""Gender"" text DEFAULT 'female';
+                ALTER TABLE ""Users"" ADD COLUMN IF NOT EXISTS ""ActivityLevel"" double precision DEFAULT 1.2;
+                ALTER TABLE ""Users"" ADD COLUMN IF NOT EXISTS ""DailyCalorieGoal"" integer DEFAULT 1500;
+            ");
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine("DB Update Error: " + ex.Message);
+    }
+}
+// ==========================================
+
+app.MapControllers(); 
 
 app.Run();
