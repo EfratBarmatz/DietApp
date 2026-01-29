@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>הגדרות אישיות</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="app-header">
+        <div class="d-flex align-items-center gap-3">
+            <a href="index.html" class="text-white" style="font-size: 1.5rem;"><i class="bi bi-arrow-right"></i></a>
+            <div class="glow-text" style="font-size: 1.5rem; margin:0;">האזור האישי</div>
+        </div>
+    </div>
+
+    <div class="container mt-4 mb-5">
+        
+        <div class="meal-card w-100 text-start p-4 mb-3">
+            <h4 class="text-white mb-3 fw-bold"><i class="bi bi-person-vcard ms-2"></i>מי אני?</h4>
+            
+            <label class="modal-label">שם / כינוי</label>
+            <input type="text" id="pName" class="input-glass">
+
+            <div class="row">
+                <div class="col-6">
+                    <label class="modal-label">גיל</label>
+                    <input type="number" id="pAge" class="input-glass">
+                </div>
+                <div class="col-6">
+                    <label class="modal-label">מין</label>
+                    <select id="pGender" class="input-glass text-black">
+                        <option value="female">אישה</option>
+                        <option value="male">גבר</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-6">
+                    <label class="modal-label">משקל (ק"ג)</label>
+                    <input type="number" id="pWeight" class="input-glass">
+                </div>
+                <div class="col-6">
+                    <label class="modal-label">גובה (ס"מ)</label>
+                    <input type="number" id="pHeight" class="input-glass">
+                </div>
+            </div>
+        </div>
+
+        <div class="meal-card w-100 text-start p-4 mb-3">
+            <h4 class="text-white mb-3 fw-bold"><i class="bi bi-activity ms-2"></i>אורח חיים</h4>
+            <label class="modal-label">כמה את זזה ביום יום?</label>
+            <select id="pActivity" class="input-glass text-black">
+                <option value="1.2">😴 ישבני (עבודה משרדית, מעט ספורט)</option>
+                <option value="1.375">🚶‍♀️ פעיל קל (ספורט 1-3 פעמים בשבוע)</option>
+                <option value="1.55">🏃‍♀️ פעיל בינוני (ספורט 3-5 פעמים)</option>
+                <option value="1.725">🏋️‍♀️ פעיל מאוד (ספורט כל יום)</option>
+            </select>
+        </div>
+
+        <div class="meal-card w-100 p-4 mb-3 border-snack" style="background: rgba(0,0,0,0.3);">
+            <div class="text-center">
+                <h5 class="text-white opacity-75">היעד המומלץ עבורך</h5>
+                <div class="glow-text" style="font-size: 3rem;" id="calculatedGoal">---</div>
+                <small class="text-white">קלוריות ליום</small>
+            </div>
+            <hr class="border-white opacity-25 my-3">
+            <label class="modal-label">רוצה להגדיר ידנית?</label>
+            <input type="number" id="pManualGoal" class="input-glass" placeholder="השארי ריק לחישוב אוטומטי">
+        </div>
+
+        <button onclick="saveProfile()" class="btn-glow" id="saveBtn">שמירת הגדרות</button>
+        <div id="saveMsg" class="text-center mt-3" style="display:none"></div>
+
+    </div>
+
+    <script src="js/profile.js"></script>
+</body>
+</html>
