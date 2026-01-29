@@ -120,15 +120,33 @@ function confirmDelete(id) {
 async function performDelete() {
     if(!itemToDeleteId) return;
 
+    const btn = document.getElementById('deleteBtn'); // תופסים את הכפתור
+
+    // 1. נועלים את הכפתור ומשנים טקסט
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="loading-spinner"></span> מוחק...';
+    }
+
     try {
         const res = await fetch(`${API_URL}/${itemToDeleteId}`, { method: 'DELETE' });
+        
         if(res.ok) {
             closeModal('confirmModal');
-            closeModal('viewModal'); // סוגר גם את רשימת הארוחות אם פתוחה
+            closeModal('viewModal'); 
             loadData();
+        } else {
+            alert('שגיאה במחיקה');
         }
     } catch(e) {
         console.error(e);
+        alert('שגיאת תקשורת');
+    } finally {
+        // 2. משחררים את הכפתור ומחזירים למצב רגיל (כדי שיהיה מוכן לפעם הבאה)
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = 'מחיקה';
+        }
     }
 }
 
